@@ -35,7 +35,8 @@ Additionally, admins of the website will be able to perform these same functiona
 
 **Frontend:** React for building the interactive UI with dynamic features that responds to the user.
 **Backend:** Spring Boot for creating a secure REST API to handle user authentication, card management, and data storage.
-**Database:** MySQL to store user card data, and collections including relationships between users and their collections
+**Database:** MySQL to store user card data, and collections including relationships between users and their collections.
+**Docker:** Make use of containerization for a virtual webapp space and database during development.
 **Scryfall Integration:** External Scryfall API for fetching the extensive list of cards in Magic the Gathering.
 **Authentication:** JWT (JSON Web Token) for secure user login and role management.
 
@@ -333,3 +334,56 @@ An enum with four values: Common, Uncommon, Rare, Mythic
 
 ### security.SecurityConfig extends WebSecurityConfigurerAdapter
 - `protected void configure(HttpSecurity)`
+
+## Wizards of the Code Task List
+
+* [X] Setup the project repo (Nikolas)
+* [ ] Configure the .gitignore (Nikolas)
+* [ ] Research Scryfall API (Everybody | 2 hours)
+* [ ] Research Elastic Search (Everybody | 2 hours)
+
+### Infrastructure
+* [ ] Setup Docker and configure (Nikolas | 2 hours)
+* [ ] Build the database
+    * [ ] Write the DDL (Cesar | 1 hour)
+    * [ ] Write the DML for testing until API is implemented (Taylor | 1 hour)
+    * [ ] Write a test database (Cesar/Taylor | 1 hour)
+### Server
+* [ ] Add Spring DI and Mocking to the project (Roger | 0.5 hours)
+* [ ] Create models (Taylor | 0.5 hours)
+* [ ] Implement repositories
+    * [ ] Repository for fetching users (Nikolas | 1 hour)
+    * [ ] Repository for fetching cards (Taylor | 1 hour)
+    * [ ] Repository for fetching collections/collected cards (Roger | 2 hour)
+    * [ ] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
+* [ ] Implement services
+    * [ ] Service for users (Nikolas | 1 hour)
+    * [ ] Service for cards (Taylor | 1 hour)
+    * [ ] Service for collections (Roger | 2 hours)
+    * [ ] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
+* [ ] Implement controllers
+    * [ ] Controller for users (Nikolas | 1 hour)
+    * [ ] Controller for cards (Taylor | 1 hour)
+    * [ ] Controller for collections (Roger | 1 hour)
+    * [ ] Global Exception Handler (Taylor | 0.5 hour)
+    * [ ] Auth Controller (Cesar/Nikolas | 2 hours)
+    * [ ] Write mappers (Nikolas/Taylor/Roger | 1 hour)
+    * [ ] Unit Tests (Nikolas/Taylor/Roger | 1 hour)
+* [ ] Implement updating the database via Scryfall API
+  * [ ] Access today's bulk download (Taylor/Roger | 3 hours)
+  * [ ] Parse the returned JSON to populate the local database (Taylor/Roger | 4 hours)
+  * [ ] Paginate search results to only return a subset (Taylor/Roger | 2 hours)
+* [ ] Implement Elastic Search
+### Client
+* [ ] Create react app and trim cruft (Cesar | 0.5 hours)
+* [ ] Implement user login/registration page (Cesar | 2 hours)
+    * [ ] Implement user authentication (Cesar/Nikolas | 5 hours)
+    * [ ] Run tests (Roger | 0.5 hours)
+* [ ] Implement Home/My Collection pages (Cesar | 3 hours)
+    * [ ] Run tests (Taylor | 1 hour)
+* [ ] Implement pages for manipulating a specific card
+    * [ ] Add a new card to the collection (Cesar | 2 hours)
+    * [ ] Edit an existing collected card (Cesar | 1 hour)
+    * [ ] Delete a card from the collection (Cesar | 1 hour)
+    * [ ] Run tests (Nikolas | 2 hours)
+* [ ] Style everything to look pretty-ish (Nikolas | 4 hours)
