@@ -135,6 +135,7 @@ Precondition: User must be logged in with the GUEST or ADMIN role.
 - **Success Criteria:** If users are able to search both their collection, as well as the database for cards that find what they are looking for dynamically with ease then this learning goal will be considered achieved.
 
 ## Class Diagram
+```
 .
 └── src/
     ├── main/
@@ -183,49 +184,152 @@ Precondition: User must be logged in with the GUEST or ADMIN role.
         │           └── CollectionServiceTest.java
         └── resources/
             └── application.properties
-
+```
 ## Class List
 
-## Wizards of the Code Task List
+### App
+- `public static void main(String[])` -- Instantiate all required classes with valid arguments through dependency injection. Run Controller
 
-* [ ] Setup the project repo
-* [ ] Configure the .gitignore
+### controllers.AuthController
+- `private final AuthenticationManager`
+- `private finalJwtConverter`
+- `public AuthController(AuthenticationManager, JwtConverter)` -- constructor
+- `public ResponseEntity<Map<String, String>> authenticate(@RequestBody Map<String, String>`) -- @Post to ("/authenticate"), use jwt to authenticate a user
 
-## Server
-* [ ] Add Spring DI to the project
-* [ ] Create models
-* [ ] Implement repositories
-    * [ ] Repository for fetching users
-    * [ ] Repository for fetching cards
-    * [ ] Unit Tests
-* [ ] Implement services
-    * [ ] Service for collections
-    * [ ] Service for cards
-    * [ ] Unit Tests
-* [ ] Implement controllers
-    * [ ] Controller for collections
-    * [ ] Controller for cards
-    * [ ] Global Exception Handler
-    * [ ] Auth Controller
-    * [ ] Write mappers
-    * [ ] Unit Tests
-* [ ] Build the database
-    * [ ] Write the DDL
-    * [ ] Write the DML
-    * [ ] Write a test database
-* [ ] Implement updating the database via Scryfall API
-    * [ ] Access today's bulk download
-    * [ ] Parse the returned JSON to populate the local database
-    
-## Client
-* [ ] Create react app and trim cruft
-* [ ] Implement user login/registration page
-    * [ ] Implement user authentication
-    * [ ] Run tests
-* [ ] Implement Home/My Collection pages
-    * [ ] Run tests
-* [ ] Implement pages for manipulating a specific card 
-    * [ ] Add a new card to the collection
-    * [ ] Edit an existing collect
-    * [ ] Run tests
-* [ ] Style everything to look pretty-ish
+### controllers.CardController
+- `private CardService`
+- `public CardController(CardService)` -- constructor
+- `public List<Card> findAll()` -- @Get, asks the service for a list of all Cards
+- `public ResponseEntity<Object> add(@RequestBody Card)` -- @Post, asks the service to add the given Card
+- `public ResponseEntity<Object> updateDatabase()` -- asks the service to start the process of updating the local database with today's bulk download
+
+### controllers.CollectionController
+- `private CollectionService`
+- `public CollectionController` -- constructor
+- `public Collection findCollectionByUser(@PathVariable int userId)` -- @Get, asks the service for the Collection belonging to the current user
+- `public List<CollectedCard> findCollectedCards(@PathVariable int collectionId)` -- @Get, asks the service to get a list of all CollectedCard belonging to the given Collection
+- `public ResponseEntity<Object> addCollectedCard(@RequestBody CollectedCard, @PathVariable int collectionId)` -- @Post, asks the service to add the CollectedCard to the Collection
+- `public ResponseEntity<Object> editCollectedCard(@RequestBody CollectedCard, @PathVariable int collectedCardId)` -- @Put, asks the service to update the CollectedCard
+- `public ResponseEntity<Object> deleteCollectedCard(@RequestBody CollectedCard, @PathVariable int collectedCardId)` -- @Delete, asks the service to delete the CollectedCard
+
+### controllers.GlobalExceptionHandler
+Catches and handles various exceptions thrown by controllers
+
+### data.UserRoleJdbcTemplateRepository
+- `private final JdbcTemplate`
+- `public UserRoleJdbcTemplateRepository(JdbcTemplate)` -- constructor
+- `public List<Role> findUserRoles(User)` -- query the database for roles associated with the User
+
+### data.UserRoleRepository (interface)
+- `List<Role> findUserRoles(User)`
+
+### data.UserJdbcTemplateRepository
+- `private final JdbcTemplate`
+- `public UserJdbcTemplateRepository(JdbcTemplate)` -- constructor
+- `public List<User> findByUsername(String)` -- query the database for Users that matches the username, multiple Users could have the same username
+- `public User findByEmail(String)` -- query the database for a User that has the given email
+- `public User add(User)` -- attempt to add a new User to the database, the database should autogenerate their ID
+- `public void update(User)` -- attempt to update the User in the database
+- `public void updateRoles(User)` -- update a User's roles in the database. First strip all their old roles then re-add the ones they're supposed to have
+
+### data.UserRepository (interface)
+- `List<User> findByUsername(String)`
+- `User findByEmail(String)`
+- `User add(User)`
+- `User update(User)`
+- `User updateRoles(User)`
+
+### data.CardJdbcTemplateRepository
+- `private final JdbcTemplate`
+- `public CardJdbcTemplateRepository(JdbcTemplate)` -- constructor
+- `public List<Card> findAll()` -- query the database for a list of all Cards
+- `public boolean updateDatabase(List<Card>)` -- attempt to flash the database with a bulk import of cards from Scryfall
+
+### data.CardRepository (interface)
+- `List<Card> findAll()`
+- `boolean updateDatabase(List<Card>)`
+
+### data.CollectionJdbcTemplateRepository
+- `private final JdbcTemplate`
+- `public CollectionJdbcTemplateRepository(JdbcTemplate)` -- constructor
+- `public Collection findCollectionByUser(int userId)` -- query the database for the Collection belonging to the User
+- `public List<CollectedCard> findCollectedCardsByCollection(int collectionId)` -- query the database for all CollectedCards that belong in the Collection
+- `public CollectedCard addCollectedCard(CollectedCard, int collectionId)` -- query the database to add the CollectedCard
+- `public boolean editCollectedCard(CollectedCard, int collectedCardId)` -- query the database to update the CollectedCard
+- `public boolean deleteCollectedCard(CollectedCard, int collectedCardId)` -- query the database to delete the CollectedCard
+
+### data.CollectionRepository (interface)
+- `Collection findCollectionByUser(int userId)`
+- `List<CollectedCard> findCollectedCardsByCollection(int collectionId)`
+
+### domain.CardService
+- `private final CardRepository`
+- `public CardService(CardRepository)` -- constructor
+- `public List<Card> findAll()` -- pass through between the controller and service to fetch all Cards
+- `public boolean updateDatabase(List<Card>)` -- pass a list of all Cards made from Scryfall to the repository
+
+### domain.CollectionService
+- `private final CollectionRepository`
+- `public CollectionService(CollectionRepository)` -- constructor
+- `public Collection findCollectionByUser(int userId)` -- pass through between controller and service to fetch a Collection
+- `public List<CollectedCard> findCollectedCardsByCollection(int collectionId)` -- pass through between controller and service to get all CollectedCard belonging to a collection
+- `public Result<CollectedCard> addCollectedCard(CollectedCard, int collectionId)` -- pass through between controller and service to add the CollectedCard
+- `public Result<CollectedCard> editCollectedCard(CollectedCard, int collectedCardId)` -- pass through between controller and service to update the CollectedCard
+- `public boolean deleteCollectedCard(CollectedCard, int collectedCardId)` -- pass through between controller and service to delete the CollectedCard
+
+### models.UserRole
+An enum for Guest and Admin
+
+### models.User
+- `private int userId`
+- `private String username`
+- `private String email`
+- `private String password`
+- `private boolean restricted`
+- `private List<String> roles`
+- Full getters and setters
+
+### models.Card
+- `private int cardId`
+- `private String name`
+- `private String manaCost`
+- `private CardType cardType`
+- `private List<CardColor> cardColors`
+- `private CardRarity rarity`
+- `private String cardSet`
+- `private String imageUri`
+- Full getters and setters
+
+### models.CollectedCard
+- `private int collectedCardId`
+- `private int cardId`
+- `private int collectionId`
+- `private int quantity`
+- `private String condition`
+- `private boolean inUse`
+- Full getters and setters
+
+### models.Collection
+- `private int collectionId`
+- `private String name`
+- Full getters and setters
+
+### models.CardColor
+An enum with six values: White, Blue, Black, Red, Green, and Colorless
+
+### models.CardType
+An enum with seven values: Artifact, Creature, Enchantment, Instant, Land, Planeswalker, and Sorcery
+
+### models.CardRarity
+An enum with four values: Common, Uncommon, Rare, Mythic
+
+### security.UserService
+- `private final UserRepository`
+- `private final PasswordEncoder`
+- `public UserService(UserRepository, PasswordEncoder)` -- constructor
+- `public findByUsername(String)`
+- `public findByEmail(String)`
+- `public add(User)`
+
+### security.SecurityConfig extends WebSecurityConfigurerAdapter
+- `protected void configure(HttpSecurity)`
