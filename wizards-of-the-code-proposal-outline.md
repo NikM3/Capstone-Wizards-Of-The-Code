@@ -84,7 +84,7 @@ The application will implement role-based access control. The system will have t
 
 #### **Add Cards to the Collection**
 **Goal:** As a user, I want to be add cards to my collection.
-Plan to meet requirement: Users will be able to search for a card with filters for finding what they are looking for, then fill a form out where they can select the printing of the card, the quantity of it, its condition, and if it is currently in use in a deck or not. Once submitted it will be added to their collection for viewing.
+Plan to meet requirement: Users will be able to search for a card with filters for finding what they are looking for, then fill a form out where they can select the printing of the card, the quantity of it, its condition, and if it is currently in use in a deck or not. Once submitted it will be added to their collection for viewing. Search results will be chunked and displayed via pagination.
 Precondition: The user must be logged in with the GUEST or ADMIN role. The card cannot already be in the collection.
 
 #### **Update a Card in the Collection**
@@ -99,7 +99,7 @@ Preconditions: The user must be logged in with the GUEST or ADMIN role. The card
 
 #### **View Cards in the Collection**
 **Goal:** As a user, I want to be able to view my collection in a clear and meaningful way.
-Plan to meet requirement: A default list view of a user's collection will be shown to them. This will include basic details such as the card's name, its cost, quantity, printing, and if it is currently in use. A user will have the ability to click an individual card to get a more detailed view of it, as well as filter and search their collection to find certain card(s) that they are looking for.
+Plan to meet requirement: A default list view of a user's collection will be shown to them. This will include basic details such as the card's name, its cost, quantity, printing, and if it is currently in use. A user will have the ability to click an individual card to get a more detailed view of it, as well as filter and search their collection to find certain card(s) that they are looking for. Using pagination the amount of displayed data will be divided into chunks for both ease of use and performance.
 Preconditions: The user must be logged in with the GUEST or ADMIN role.
 
 #### *Manage the Card Database**
@@ -125,7 +125,7 @@ Precondition: User must be logged in with the GUEST or ADMIN role.
 
 - **Application:** We will use the Scryfall API to fetch the list of cards found within MTG and add them to our local database to be browsed by users to add to their collections.
 - **Research and Resources:** Starting with the Scryfall API documentation and any tutorials on implementations.
-- **Challenges:** There is a vast amount of data, with well over 20,000 cards that will need to be fetched, so learning best practices for retrieving and manipulating datasets that large.
+- **Challenges:** There is a vast amount of data, with well over 20,000 cards that will need to be fetched, so learning best practices for retrieving and manipulating datasets that large such as pagination will be vital.
 - **Success Criteria:** If we are able to seamlessly integrate this external API for populating our database, ensuring users are able to find even the latest cards to add to their collection as well as displaying them properly, then this goal will be considered achieved.
 
 #### **Learning Goal:** Implementing Elastic Search for a Positive User Experience when Looking for Cards
@@ -377,7 +377,8 @@ An enum with four values: Common, Uncommon, Rare, Mythic
 ### Client
 * [ ] Create react app and trim cruft (Cesar | 0.5 hours)
 * [ ] Implement user login/registration page (Cesar | 2 hours)
-    * [ ] Implement user authentication (Cesar/Nikolas | 5 hours)
+    * [ ] Implement registering a new user (Cesar/Nikolas | 2 hours)    
+    * [ ] Implement user login (Cesar/Nikolas | 3 hours)
     * [ ] Run tests (Roger | 0.5 hours)
 * [ ] Implement Home/My Collection pages (Cesar | 3 hours)
     * [ ] Run tests (Taylor | 1 hour)
@@ -386,4 +387,9 @@ An enum with four values: Common, Uncommon, Rare, Mythic
     * [ ] Edit an existing collected card (Cesar | 1 hour)
     * [ ] Delete a card from the collection (Cesar | 1 hour)
     * [ ] Run tests (Nikolas | 2 hours)
+* [ ] Implement pages for admin
+    * [ ] Manage current users (Cesar | 2 hours)
+    * [ ] Interface for pulling daily/weekly database update (Cesar | 1 hour)
 * [ ] Style everything to look pretty-ish (Nikolas | 4 hours)
+
+* [ ] 3rd party tests if time available
