@@ -11,6 +11,16 @@
 * [ ] Configure the .gitignore (Nikolas)
 * [ ] Research Scryfall API (Everybody | 2 hours)
 * [ ] Research Elastic Search (Everybody | 2 hours)
+
+### Infrastructure
+* [ ] Create docker container (Nikolas/Taylor | 1 hour)
+    * [ ] Test container startup (Nikolas/Taylor | 0.5 hours)
+* [ ] Build the database
+    * [ ] Write the DDL (Cesar | 1 hour)
+    * [ ] Write the DML for testing until API is implemented (Taylor | 1 hour)
+    * [ ] Write a test database (Cesar/Taylor | 1 hour)
+* [ ] Configure environment variables (Roger | 0.5 hour)
+
 ### Server
 * [ ] Add Spring DI and Mocking to the project (Roger | 0.5 hours)
 * [ ] Create models (Taylor | 0.5 hours)
@@ -32,24 +42,32 @@
     * [ ] Auth Controller (Cesar/Nikolas | 2 hours)
     * [ ] Write mappers (Nikolas/Taylor/Roger | 1 hour)
     * [ ] Unit Tests (Nikolas/Taylor/Roger | 1 hour)
-* [ ] Build the database
-    * [ ] Write the DDL (Cesar | 1 hour)
-    * [ ] Write the DML for testing until API is implemented (Taylor | 1 hour)
-    * [ ] Write a test database (Cesar/Taylor | 1 hour)
 * [ ] Implement updating the database via Scryfall API
   * [ ] Access today's bulk download (Taylor/Roger | 3 hours)
   * [ ] Parse the returned JSON to populate the local database (Taylor/Roger | 4 hours)
 * [ ] Implement Elastic Search
+
 ### Client
 * [ ] Create react app and trim cruft (Cesar | 0.5 hours)
+* [ ] Create react components (Navbar/Footer) (Cesar | 0.5 hours)
+* [ ] Set up React routing – (Cesar | 0.5 hours)
 * [ ] Implement user login/registration page (Cesar | 2 hours)
     * [ ] Implement user authentication (Cesar/Nikolas | 5 hours)
     * [ ] Run tests (Roger | 0.5 hours)
-* [ ] Implement Home/My Collection pages (Cesar | 3 hours)
-    * [ ] Run tests (Taylor | 1 hour)
+* [ ] Implement Home page (Cesar | 1.5 hours)
+    * [ ] Run tests (Taylor | 0.5 hour)
+* [ ] Implement My Collection page (Cesar | 1.5 hours)
+    * [ ] Run tests (Taylor | 0.5 hour)
 * [ ] Implement pages for manipulating a specific card
     * [ ] Add a new card to the collection (Cesar | 2 hours)
     * [ ] Edit an existing collected card (Cesar | 1 hour)
     * [ ] Delete a card from the collection (Cesar | 1 hour)
     * [ ] Run tests (Nikolas | 2 hours)
+* [ ] Implement Admin pages
+    * [ ] Implement admin view: all users (Cesar | 2 hours)
+    * [ ] Implement admin actions: ban/update users (Cesar | 1 hour)
+    * [ ] Implement admin: update local database (Cesar | 2 hours)
+    * [ ] Run tests (Roger | 2 hours)
+* [ ] Connect and integrate API with frontend (Cesar | 2.5 hours)
+* [ ] Run final tests (Roger | 2 hours)
 * [ ] Style everything to look pretty-ish (Nikolas | 4 hours)
