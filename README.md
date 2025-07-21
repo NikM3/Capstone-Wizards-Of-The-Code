@@ -8,7 +8,7 @@
 ## Wizards of the Code Task List
 
 * [X] Setup the project repo (Nikolas)
-* [ ] Configure the .gitignore (Nikolas)
+* [X] Configure the .gitignore (Nikolas)
 * [ ] Research Scryfall API (Everybody | 2 hours)
 * [ ] Research Elastic Search (Everybody | 2 hours)
 
