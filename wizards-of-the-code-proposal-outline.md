@@ -338,22 +338,22 @@ An enum with four values: Common, Uncommon, Rare, Mythic
 ## Wizards of the Code Task List
 
 * [X] Setup the project repo (Nikolas)
-* [ ] Configure the .gitignore (Nikolas)
+* [x] Configure the .gitignore (Nikolas)
 * [ ] Research Scryfall API (Everybody | 2 hours)
 * [ ] Research Elastic Search (Everybody | 2 hours)
 
 ### Infrastructure
 * [ ] Create docker container (Nikolas/Taylor | 1 hour)
     * [ ] Test container startup (Nikolas/Taylor | 0.5 hours)
-* [ ] Build the database
-    * [ ] Write the DDL (Cesar | 1 hour)
-    * [ ] Write the DML for testing until API is implemented (Taylor | 1 hour)
-    * [ ] Write a test database (Cesar/Taylor | 1 hour)
+* [x] Build the database
+    * [x] Write the DDL (Cesar | 1 hour)
+    * [x] Write the DML for testing until API is implemented (Taylor | 1 hour)
+    * [x] Write a test database (Cesar/Taylor | 1 hour)
 * [ ] Configure environment variables (Roger | 0.5 hour)
 
 ### Server
 * [ ] Add Spring DI and Mocking to the project (Roger | 0.5 hours)
-* [ ] Create models (Taylor | 0.5 hours)
+* [x] Create models (Taylor | 0.5 hours)
 * [ ] Implement repositories
     * [ ] Repository for fetching users (Nikolas | 1 hour)
     * [ ] Repository for fetching cards (Taylor | 1 hour)
