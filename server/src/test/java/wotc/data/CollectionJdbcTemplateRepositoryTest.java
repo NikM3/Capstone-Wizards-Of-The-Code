@@ -15,9 +15,6 @@ class CollectionJdbcTemplateRepositoryTest {
     private CollectionJdbcTemplateRepository repository;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     KnownGoodState knownGoodSate;
 
     @BeforeEach
@@ -52,6 +49,15 @@ class CollectionJdbcTemplateRepositoryTest {
         actual = repository.add(collection);
         assertNotNull(actual);
         assertEquals(3, actual.getCollectionId());
+    }
+
+    @Test
+    void shouldEdit() {
+        Collection collection = repository.findCollectionByUser(2);
+        collection.setName("updated collection name");
+
+        assertTrue(repository.editCollection(collection));
+        assertEquals("updated collection name", repository.findCollectionByUser(2).getName());
     }
 
     @Test

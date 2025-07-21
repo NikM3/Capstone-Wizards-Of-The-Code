@@ -10,7 +10,7 @@ public interface CollectionRepository {
 
     Collection add(Collection collection);
 
-    boolean update(Collection collection);
+    boolean editCollection(Collection collection);
 
     boolean deleteById(int collectionId);
 }
