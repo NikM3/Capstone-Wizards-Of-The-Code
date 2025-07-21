@@ -111,7 +111,6 @@ values
 (3, 'rare'),
 (4, 'mythic');
 
-
 -- Set up testing
 delimiter //
 create procedure set_known_good_state()
@@ -158,4 +157,3 @@ begin
     
 end //
 delimiter ;
-    
