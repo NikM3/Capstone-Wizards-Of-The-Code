@@ -26,8 +26,8 @@
 * [x] Create models (Taylor | 0.5 hours)
 * [ ] Implement repositories
     * [x] Repository for fetching users (Nikolas | 1 hour)
-    * [ ] Repository for fetching cards (Taylor | 1 hour)
-    * [ ] Repository for fetching collections/collected cards (Roger | 2 hour)
+    * [ ] Repository for fetching cards (Roger | 1 hour)
+    * [x] Repository for fetching collections/collected cards (Taylor | 2 hour)
     * [ ] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
 * [ ] Implement services
     * [ ] Service for users (Nikolas | 1 hour)

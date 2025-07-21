@@ -22,7 +22,6 @@ public class CollectionJdbcTemplateRepository implements CollectionRepository {
 
     @Override
     public Collection findCollectionByUser(int userId) {
-
         final String sql = "select collection_id, user_id, collection_name "
                 + "from collection "
                 + "where user_id = ?;";
@@ -52,14 +51,14 @@ public class CollectionJdbcTemplateRepository implements CollectionRepository {
     }
 
     @Override
-    public boolean update(Collection collection) {
+    public boolean editCollection(Collection collection) {
         // The only thing that should be updated is the collection's name
         final String sql = "update collection set "
                 + "collection_name = ? "
-                + "where collection_id ?;";
+                + "where collection_id = ?;";
 
         return jdbcTemplate.update(sql,
-                collection.getName()) > 0;
+                collection.getName(), collection.getCollectionId()) > 0;
     }
 
     @Override

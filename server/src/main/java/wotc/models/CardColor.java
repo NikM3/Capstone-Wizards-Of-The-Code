@@ -5,7 +5,8 @@ public enum CardColor {
     BLUE("Blue", "u"),
     BLACK("Black", "b"),
     RED("Red", "r"),
-    GREEN("Green", "g");
+    GREEN("Green", "g"),
+    COLORLESS("Colorless", "c");
 
     private final String name;
     private final String abbreviation;
