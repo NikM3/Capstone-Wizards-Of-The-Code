@@ -10,6 +10,7 @@ create table `role` (
 );
 
 create table `user` (
+	user_id int primary key auto_increment,
 	username varchar(50) not null,
     email varchar(100) not null,
     password_hash_char varchar(2048) not null,
@@ -85,4 +86,74 @@ create table collected_card (
 		foreign key (collection_id)
         references collection (collection_id)
 );
-	
+
+-- Static insertions that don't need to change between runs
+
+insert into role (role_id, role_name)
+values
+(1, 'ADMIN'),
+(2, 'GUEST');
+
+insert into card_type (card_type_id, card_type)
+values
+(1, 'artifact'),
+(2, 'creature'),
+(3, 'enchantment'),
+(4, 'land'),
+(5, 'instant'),
+(6, 'sorcery'),
+(7, 'battle');
+
+insert into rarity (rarity_id, rarity)
+values
+(1, 'common'),
+(2, 'uncommon'),
+(3, 'rare'),
+(4, 'mythic');
+
+-- Set up testing
+delimiter //
+create procedure set_known_good_state()
+begin
+	delete from collected_card;
+    alter table collected_card auto_increment = 1;
+    delete from card;
+    alter table card auto_increment = 1;
+    delete from collection;
+    alter table collection auto_increment = 1;
+    delete from user_role;
+    delete from `user`;
+    alter table `user` auto_increment = 1;
+    
+    insert into card(card_id, card_type_id, rarity_id, card_name, mana_cost, color_identity, `set`, image_uri)
+    values
+    (1, 5, 1, 'Chandra''s Outrage', 4, 'r', 'Modern Masters 2017', 'test uri'),
+    (2, 4, 2, 'Dimir Aqueduct', 0, 'ub', 'Zendikar Rising Commander', 'test uri'),
+    (3, 6, 3, 'Hour of Reckoning', 7, 'w', 'Tarkir: Dragonstorm Commander', 'test uri'),
+    (4, 2, 4, 'The Ur-Dragon', 9, 'wubrg', 'Commander Masters', 'test uri');
+    
+    insert into `user`(user_id, username, email, password_hash_char, restricted)
+    values
+    (1, 'test user1', 'user1@test.com', 'testpassword1', 0),
+    (2, 'test user2', 'user2@test.com', 'testpassword2', 0),
+    (3, 'test user3', 'user3@test.com', 'testpassword3', 1);
+    
+    insert into user_role(user_id, role_id)
+    values
+    (1, 1),
+    (2, 2),
+    (3, 2);
+    
+    insert into collection(collection_id, user_id, collection_name)
+    values
+    (1, 2, 'test collection');
+    
+    insert into collected_card(collected_card_id, card_id, collection_id, quantity, `condition`, in_use)
+    values
+    (1, 1, 1, 5, 'Lightly Played', 0),
+    (2, 2, 1, 10, 'Moderately Played', 1),
+    (3, 3, 1, 2, 'Lightly Played', 0),
+    (4, 4, 1, 1, 'Near Mint', 1);
+    
+end //
+delimiter ;
