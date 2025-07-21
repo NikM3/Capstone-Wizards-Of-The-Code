@@ -312,6 +312,7 @@ An enum for Guest and Admin
 
 ### models.Collection
 - `private int collectionId`
+- `private int userId`
 - `private String name`
 - Full getters and setters
 
