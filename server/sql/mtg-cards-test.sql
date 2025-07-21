@@ -91,25 +91,25 @@ create table collected_card (
 
 insert into role (role_id, role_name)
 values
-(1, 'ADMIN'),
-(2, 'GUEST');
+(1, 'Admin'),
+(2, 'Guest');
 
 insert into card_type (card_type_id, card_type)
 values
-(1, 'artifact'),
-(2, 'creature'),
-(3, 'enchantment'),
-(4, 'land'),
-(5, 'instant'),
-(6, 'sorcery'),
-(7, 'battle');
+(1, 'Artifact'),
+(2, 'Creature'),
+(3, 'Enchantment'),
+(4, 'Land'),
+(5, 'Instant'),
+(6, 'Sorcery'),
+(7, 'Battle');
 
 insert into rarity (rarity_id, rarity)
 values
-(1, 'common'),
-(2, 'uncommon'),
-(3, 'rare'),
-(4, 'mythic');
+(1, 'Common'),
+(2, 'Uncommon'),
+(3, 'Rare'),
+(4, 'Mythic');
 
 -- Set up testing
 delimiter //
@@ -127,10 +127,10 @@ begin
     
     insert into card(card_id, card_type_id, rarity_id, card_name, mana_cost, color_identity, `set`, image_uri)
     values
-    (1, 5, 1, 'Chandra''s Outrage', 4, 'r', 'Modern Masters 2017', 'test uri'),
-    (2, 4, 2, 'Dimir Aqueduct', 0, 'ub', 'Zendikar Rising Commander', 'test uri'),
-    (3, 6, 3, 'Hour of Reckoning', 7, 'w', 'Tarkir: Dragonstorm Commander', 'test uri'),
-    (4, 2, 4, 'The Ur-Dragon', 9, 'wubrg', 'Commander Masters', 'test uri');
+    (1, 5, 1, 'Chandra''s Outrage', '4', 'r', 'Modern Masters 2017', 'test uri'),
+    (2, 4, 2, 'Dimir Aqueduct', '0', 'ub', 'Zendikar Rising Commander', 'test uri'),
+    (3, 6, 3, 'Hour of Reckoning', '7', 'w', 'Tarkir: Dragonstorm Commander', 'test uri'),
+    (4, 2, 4, 'The Ur-Dragon', '9', 'wubrg', 'Commander Masters', 'test uri');
     
     insert into `user`(user_id, username, email, password_hash_char, restricted)
     values
