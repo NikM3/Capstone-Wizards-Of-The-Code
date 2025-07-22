@@ -55,13 +55,13 @@ create table collection (
 );
 
 create table card (
-	card_id int primary key auto_increment,
+	card_id varchar(36) primary key,
     card_type_id int not null,
     rarity_id int not null,
-    card_name varchar(50) not null,
-    mana_cost varchar(50) not null,
-    color_identity varchar(20) not null,
-    `set` varchar(30) not null,
+    card_name varchar(200) not null,
+    mana_cost varchar(100) not null,
+    color_identity varchar(100) not null,
+    `set` varchar(100) not null,
     image_uri varchar(200) not null,
     
     constraint fk_card_card_type_id
@@ -74,7 +74,7 @@ create table card (
 
 create table collected_card (
 	collected_card_id int primary key auto_increment,
-    card_id int not null,
+    card_id varchar(36) not null,
     collection_id int not null,
     quantity int not null,
     `condition` varchar(20),
@@ -104,14 +104,18 @@ values
 (5, 'Instant'),
 (6, 'Planeswalker'),
 (7, 'Sorcery'),
-(8, 'Battle');
+(8, 'Battle'),
+(9, 'Unknown');
+
 
 insert into rarity (rarity_id, rarity)
 values
 (1, 'Common'),
 (2, 'Uncommon'),
 (3, 'Rare'),
-(4, 'Mythic');
+(4, 'Mythic'),
+(5, 'Special'),
+(6, 'Bonus');
 
 -- Set up testing
 delimiter //
