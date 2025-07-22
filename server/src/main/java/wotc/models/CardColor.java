@@ -5,7 +5,8 @@ public enum CardColor {
     BLUE("Blue", "u"),
     BLACK("Black", "b"),
     RED("Red", "r"),
-    GREEN("Green", "g");
+    GREEN("Green", "g"),
+    COLORLESS("Colorless", "c");
 
     private final String name;
     private final String abbreviation;
@@ -30,6 +31,16 @@ public enum CardColor {
             }
         }
         String message = String.format("No Card Color with name: %s", name);
+        throw new RuntimeException(message);
+    }
+
+    public static CardColor findByAbbreviation(String abbr) {
+        for (CardColor color : CardColor.values()) {
+            if (color.getAbbreviation().equalsIgnoreCase(abbr)) {
+                return color;
+            }
+        }
+        String message = String.format("No Card Color with abbreviation: %s", abbr);
         throw new RuntimeException(message);
     }
 }
