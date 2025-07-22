@@ -21,7 +21,7 @@ public class UserJdbcTemplateRepository implements UserRepository {
     ;
     @Override
     public User findByUsername(String username) {
-        final String sql = "select user_id, username, email, password_hash_char, restricted "
+        final String sql = "select user_id, username, email, password_hash_char, restricted, `role` "
                 + "from `user` "
                 + "where username = ? and restricted = 0;";
         User user = jdbcTemplate.query(sql, new UserMapper(), username).stream()
@@ -35,7 +35,7 @@ public class UserJdbcTemplateRepository implements UserRepository {
 
     @Override
     public User findByEmail(String email) {
-        final String sql = "select user_id, username, email, password_hash_char, restricted "
+        final String sql = "select user_id, username, email, password_hash_char, restricted, `role` "
                 + "from `user` "
                 + "where email = ? and restricted = 0;";
         User user = jdbcTemplate.query(sql, new UserMapper(), email).stream()
@@ -49,16 +49,17 @@ public class UserJdbcTemplateRepository implements UserRepository {
 
     @Override
     public User add(User user) {
-        final String sql = "insert into `user` (username, email, password_hash_char, restricted) "
-                + "values(?, ?, ?, ?);";
+        final String sql = "insert into `user` (username, email, password_hash_char, restricted, `role`) "
+                + "values(?, ?, ?, ?, ?);";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int rowsAffected = jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, user.getUsername());
+            ps.setString(1, user.getActualUsername());
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getPassword());
             ps.setBoolean(4, user.isRestricted()); // check
+            ps.setString(5, String.valueOf(user.getRole()));
             return ps;
         }, keyHolder);
         if (rowsAffected <= 0) {

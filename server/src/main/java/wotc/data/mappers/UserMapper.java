@@ -1,6 +1,7 @@
 package wotc.data.mappers;
 
 import org.springframework.jdbc.core.RowMapper;
+import wotc.models.Role;
 import wotc.models.User;
 
 import java.sql.ResultSet;
@@ -16,7 +17,7 @@ public class UserMapper implements RowMapper<User> {
         user.setEmail(resultSet.getString("email"));
         user.setPassword(resultSet.getString("password_hash_char"));
         user.setRestricted(resultSet.getBoolean("restricted"));
-        // Roles Pending
+        user.setRole(Role.valueOf(resultSet.getString("role")));
         return user;
     }
 }

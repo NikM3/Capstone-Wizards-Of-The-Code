@@ -1,14 +1,19 @@
 package wotc.models;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 import java.util.List;
 
-public class User {
+public class User implements UserDetails {
     private int userId;
     private String username;
     private String email;
     private String password;
     private boolean restricted;
-    private List<String> roles;
+    private Role role;
 
     // Default constructor
     public User() {
@@ -16,13 +21,13 @@ public class User {
     }
 
     // Constructor for testing
-    public User(int userId, String username, String email, String password, boolean restricted, List<String> roles) {
+    public User(int userId, String username, String email, String password, boolean restricted, Role role) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.password = password;
         this.restricted = restricted;
-        this.roles = roles;
+        this.role = role;
     }
 
     public int getUserId() {
@@ -33,13 +38,44 @@ public class User {
         this.userId = userId;
     }
 
+    @Override
     public String getUsername() {
-        return username;
+        return this.email;
+    }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
+    public String getActualUsername() { return username; }
 
     public String getEmail() {
         return email;
@@ -47,10 +83,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -65,11 +97,11 @@ public class User {
         this.restricted = restricted;
     }
 
-    public List<String> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
