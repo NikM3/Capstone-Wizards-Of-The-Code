@@ -1,7 +1,6 @@
 package wotc.data.mappers;
 
 import org.springframework.jdbc.core.RowMapper;
-import wotc.data.CardRepository;
 import wotc.models.Card;
 import wotc.models.CardColor;
 import wotc.models.CardRarity;
