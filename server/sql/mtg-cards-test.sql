@@ -132,8 +132,8 @@ begin
     (1, 5, 1, 'Chandra''s Outrage', '4', 'r', 'Modern Masters 2017', 'test uri'),
     (2, 4, 2, 'Dimir Aqueduct', '0', 'ub', 'Zendikar Rising Commander', 'test uri'),
     (3, 6, 3, 'Hour of Reckoning', '7', 'w', 'Tarkir: Dragonstorm Commander', 'test uri'),
-    (4, 2, 4, 'The Ur-Dragon', '9', 'wubrg', 'Commander Masters', 'test uri');
-    (5, 1, 3, 'Black Lotus', '0', 'c', 'Limited Edition Alpha', 'test uri'); -- For testing with adding to collected_card
+    (4, 2, 4, 'The Ur-Dragon', '9', 'wubrg', 'Commander Masters', 'test uri'),
+    (5, 1, 3, 'Black Lotus', '0', 'c', 'Limited Edition Alpha', 'test uri');
 
 
     insert into `user` (`user_id`,`username`,`email`,`password_hash_char`,`restricted`,`role`) values
