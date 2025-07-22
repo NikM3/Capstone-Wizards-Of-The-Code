@@ -14,7 +14,8 @@ create table `user` (
 	username varchar(50) not null,
     email varchar(100) not null,
     password_hash_char varchar(2048) not null,
-    restricted tinyint(1)
+    restricted tinyint(1),
+    `role` varchar(20) not null default 'USER'
 );
 
 create table card_type (
