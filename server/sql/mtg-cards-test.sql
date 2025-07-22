@@ -4,11 +4,6 @@ use mtg_cards_test;
 
 -- Create the tables and their relationships
 -- First tables with no dependencies
-create table `role` (
-	role_id int primary key auto_increment,
-    role_name varchar(50) not null
-);
-
 create table `user` (
 	user_id int primary key auto_increment,
 	username varchar(50) not null,
@@ -30,19 +25,6 @@ create table rarity (
 
 -- Tables with dependencies
 
-create table user_role (
-	user_id int not null,
-    role_id int not null,
-    
-    constraint pk_user_role
-		primary key (user_id, role_id),
-	constraint fk_user_role_user_id
-		foreign key (user_id)
-        references `user`(user_id),
-	constraint fk_user_role_role_id
-		foreign key (role_id)
-        references `role`(role_id)
-);
 
 create table collection (
 	collection_id int primary key auto_increment,
@@ -90,11 +72,6 @@ create table collected_card (
 
 -- Static insertions that don't need to change between runs
 
-insert into role (role_id, role_name)
-values
-(1, 'Admin'),
-(2, 'Guest');
-
 insert into card_type (card_type_id, card_type)
 values
 (1, 'Artifact'),
@@ -141,12 +118,7 @@ begin
     (2,'user','user@mail.com','$2a$10$CVNkWJ5z/OBpqQ0NncBIueF7qDKFP3e5E573lEMpIIyO08eaLDz4y',0,'USER'),
     (3,'admin','admin@mail.com','$2a$10$MmuaTPFC39Xmod.Xg2CbfeprpWU6Msd.2sw3IrfCYVqtfc94frioe',0,'ADMIN');
 
-    
-    insert into user_role(user_id, role_id)
-    values
-    (1, 1),
-    (2, 2),
-    (3, 2);
+
     
     insert into collection(collection_id, user_id, collection_name)
     values
