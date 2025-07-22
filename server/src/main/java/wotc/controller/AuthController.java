@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import wotc.models.User;
 import wotc.security.AuthenticationResponse;
-import wotc.security.AuthenticationService;
+import wotc.domain.AuthenticationService;
 
 @RestController
 public class AuthController {
@@ -23,7 +23,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody User user) {
         try {
-            AuthenticationResponse res = authenticationService.register(user);
+            AuthenticationResponse res = authenticationService.register(user).getPayload();
             return ResponseEntity.ok(res);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -33,7 +33,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody User user) {
         try {
-            AuthenticationResponse res = authenticationService.authenticate(user);
+            AuthenticationResponse res = authenticationService.authenticate(user).getPayload();
             return ResponseEntity.ok(res);
         } catch (Exception e) {
             System.out.println(e.toString());
