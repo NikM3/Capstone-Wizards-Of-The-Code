@@ -27,12 +27,15 @@ public class CollectionController {
 
     @GetMapping("/cards/{collectionId}")
     public List<CollectedCard> findCollectedCards(@PathVariable int collectionId) {
-        return service.findCollectedCardsByCollection(collectionId);
+        // return service.findCollectedCardsByCollection(collectionId);
+        return null;
     }
 
     @PostMapping("/cards/{collectionId}")
     public ResponseEntity<Object> addCollectedCard(@RequestBody CollectedCard cc, @PathVariable int collectionId) {
-        Result<CollectedCard> result = service.addCollectedCard(cc);
+        //Result<CollectedCard> result = service.addCollectedCard(cc);
+        System.out.println("Are we getting into the method at all?");
+        Result<CollectedCard> result = new Result<>();
 
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
@@ -47,7 +50,8 @@ public class CollectionController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-        Result<CollectedCard> result = service.editCollectedCard(cc);
+        // Result<CollectedCard> result = service.editCollectedCard(cc);
+        Result<CollectedCard> result = new Result<>();
 
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.NO_CONTENT);
@@ -58,7 +62,8 @@ public class CollectionController {
 
     @DeleteMapping("/cards/card/{collectedCardId}")
     public ResponseEntity<Object> deleteCollectedCard(@PathVariable int collectedCardId) {
-        Result<CollectedCard> result = service.deleteCollectedCardById(collectedCardId);
+        // Result<CollectedCard> result = service.deleteCollectedCardById(collectedCardId);
+        Result<CollectedCard> result = new Result<>();
 
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.NO_CONTENT);
