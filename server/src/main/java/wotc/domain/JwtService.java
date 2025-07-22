@@ -1,4 +1,4 @@
-package wotc.security;
+package wotc.domain;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
