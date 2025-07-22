@@ -54,7 +54,6 @@ public class GlobalExceptionHandlerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ccJson);
 
-        // TODO: How do we mock User login for testing?
         mvc.perform(request)
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().json(expectedJson));

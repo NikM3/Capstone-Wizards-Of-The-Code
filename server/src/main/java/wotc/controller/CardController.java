@@ -37,6 +37,10 @@ public class CardController {
 
     public ResponseEntity<Object> updateDatabase() {
         // TODO: Start the process of pulling today's bulk download from Scryfall and update the local database
+        // 1) Access the Scryfall API and do the bulk download
+        // 2) Loop or wait on a Promise until the download is finished
+        // 3) Drop the old table
+        // 4) Repopulate with the downloaded data
         return null;
     }
 
