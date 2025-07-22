@@ -32,4 +32,14 @@ public enum CardColor {
         String message = String.format("No Card Color with name: %s", name);
         throw new RuntimeException(message);
     }
+
+    public static CardColor findByAbbreviation(String abbr) {
+        for (CardColor color : CardColor.values()) {
+            if (color.getAbbreviation().equalsIgnoreCase(abbr)) {
+                return color;
+            }
+        }
+        String message = String.format("No Card Color with abbreviation: %s", abbr);
+        throw new RuntimeException(message);
+    }
 }
