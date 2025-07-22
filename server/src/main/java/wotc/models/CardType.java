@@ -6,6 +6,7 @@ public enum CardType {
     ENCHANTMENT("Enchantment"),
     LAND("Land"),
     INSTANT("Instant"),
+    PLANESWALKER("Planeswalker"),
     SORCERY("Sorcery"),
     BATTLE("Battle");
 
