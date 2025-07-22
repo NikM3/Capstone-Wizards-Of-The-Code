@@ -93,7 +93,7 @@ public class CardControllerTest {
     }
 
     private void populateLocalDatabase() {
-        private final String sql = "insert or replace into card (card_id, card_type_id, rarity_id, card_name, mana_cost, color_identity, set, image_uri) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?)";
+//        private final String sql = "insert or replace into card (card_id, card_type_id, rarity_id, card_name, mana_cost, color_identity, set, image_uri) " +
+//                "values (?, ?, ?, ?, ?, ?, ?, ?)";
     }
 }
