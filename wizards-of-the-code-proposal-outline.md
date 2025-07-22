@@ -250,18 +250,35 @@ Catches and handles various exceptions thrown by controllers
 - `List<Card> findAll()`
 - `boolean updateDatabase(List<Card>)`
 
-### data.CollectionJdbcTemplateRepository
+### data.CollectedCardRepository (interface)
+- `List<CollectedCard> findCollectedCardsByCollection(int collectionId)`
+- `CollectedCard findByCardId(int collectedCardId)`
+- `CollectedCard addCollectedCard(CollectedCard collectedCard)`
+- `boolean editCollectedCard(CollectedCard collectedCard)`
+- `public boolean deleteCollectedCard(int collectedCardId)`
+
+### data.CollectedCardJdbcTemplateRepository
 - `private final JdbcTemplate`
-- `public CollectionJdbcTemplateRepository(JdbcTemplate)` -- constructor
-- `public Collection findCollectionByUser(int userId)` -- query the database for the Collection belonging to the User
+- `public CollectedCardJdbcTemplateRepository(JdbcTemplate)` -- constructor
 - `public List<CollectedCard> findCollectedCardsByCollection(int collectionId)` -- query the database for all CollectedCards that belong in the Collection
-- `public CollectedCard addCollectedCard(CollectedCard, int collectionId)` -- query the database to add the CollectedCard
-- `public boolean editCollectedCard(CollectedCard, int collectedCardId)` -- query the database to update the CollectedCard
-- `public boolean deleteCollectedCard(CollectedCard, int collectedCardId)` -- query the database to delete the CollectedCard
+- `public CollectedCard findByCardId(int collectedCardId)` -- query the database to find an individual card by id
+- `public CollectedCard addCollectedCard(CollectedCard)` -- query the database to add the CollectedCard
+- `public boolean editCollectedCard(CollectedCard)` -- query the database to update the CollectedCard
+- `public boolean deleteCollectedCard(int collectedCardId)` -- query the database to delete the CollectedCard
 
 ### data.CollectionRepository (interface)
 - `Collection findCollectionByUser(int userId)`
-- `List<CollectedCard> findCollectedCardsByCollection(int collectionId)`
+- `Collection add(Collection collection)`
+- `boolean editCollection(Collection collection)`
+- `boolean deleteById(int collectionId)`
+
+### data.CollectionJdbcTemplateRepository
+- `private final JdbcTemplate`
+- `public CollectionJdbcTemplateRepository(JdbcTempalte)` -- Constructor
+- `public Collection findCollectionByUser(int userId)` -- query the database for the Collection belonging to the User
+- `public Collection add(Collection collection)` -- query the database to add a collection
+- `public boolean editCollection(Collection collection)` -- query the database to update the collection
+- `public boolean deleteById(int collectionId)` -- query the database to delete a collection
 
 ### domain.CardService
 - `private final CardRepository`
@@ -312,6 +329,7 @@ An enum for Guest and Admin
 
 ### models.Collection
 - `private int collectionId`
+- `private int userId`
 - `private String name`
 - Full getters and setters
 
@@ -319,7 +337,7 @@ An enum for Guest and Admin
 An enum with six values: White, Blue, Black, Red, Green, and Colorless
 
 ### models.CardType
-An enum with seven values: Artifact, Creature, Enchantment, Instant, Land, Planeswalker, and Sorcery
+An enum with eight values: Artifact, Creature, Enchantment, Instant, Land, Planeswalker, Sorcery, and Battle
 
 ### models.CardRarity
 An enum with four values: Common, Uncommon, Rare, Mythic
@@ -338,26 +356,26 @@ An enum with four values: Common, Uncommon, Rare, Mythic
 ## Wizards of the Code Task List
 
 * [X] Setup the project repo (Nikolas)
-* [ ] Configure the .gitignore (Nikolas)
+* [x] Configure the .gitignore (Nikolas)
 * [ ] Research Scryfall API (Everybody | 2 hours)
 * [ ] Research Elastic Search (Everybody | 2 hours)
 
 ### Infrastructure
-* [ ] Create docker container (Nikolas/Taylor | 1 hour)
-    * [ ] Test container startup (Nikolas/Taylor | 0.5 hours)
-* [ ] Build the database
-    * [ ] Write the DDL (Cesar | 1 hour)
-    * [ ] Write the DML for testing until API is implemented (Taylor | 1 hour)
-    * [ ] Write a test database (Cesar/Taylor | 1 hour)
-* [ ] Configure environment variables (Roger | 0.5 hour)
+* [x] Create docker container (Nikolas/Taylor | 1 hour)
+    * [x] Test container startup (Nikolas/Taylor | 0.5 hours)
+* [x] Build the database
+    * [x] Write the DDL (Cesar | 1 hour)
+    * [x] Write the DML for testing until API is implemented (Taylor | 1 hour)
+    * [x] Write a test database (Cesar/Taylor | 1 hour)
+* [x] Configure environment variables (Roger | 0.5 hour)
 
 ### Server
 * [ ] Add Spring DI and Mocking to the project (Roger | 0.5 hours)
-* [ ] Create models (Taylor | 0.5 hours)
+* [x] Create models (Taylor | 0.5 hours)
 * [ ] Implement repositories
-    * [ ] Repository for fetching users (Nikolas | 1 hour)
-    * [ ] Repository for fetching cards (Taylor | 1 hour)
-    * [ ] Repository for fetching collections/collected cards (Roger | 2 hour)
+    * [x] Repository for fetching users (Nikolas | 1 hour)
+    * [ ] Repository for fetching cards (Roger | 1 hour)
+    * [x] Repository for fetching collections/collected cards (Taylor | 2 hour)
     * [ ] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
 * [ ] Implement services
     * [ ] Service for users (Nikolas | 1 hour)
