@@ -26,10 +26,7 @@ public class UserJdbcTemplateRepository implements UserRepository {
                 + "where username = ? and restricted = 0;";
         User user = jdbcTemplate.query(sql, new UserMapper(), username).stream()
                 .findFirst().orElse(null);
-        if(user != null) {
-            // Pending
-            // addRoles(user);
-        }
+
         return user;
     }
 
@@ -40,10 +37,7 @@ public class UserJdbcTemplateRepository implements UserRepository {
                 + "where email = ? and restricted = 0;";
         User user = jdbcTemplate.query(sql, new UserMapper(), email).stream()
                 .findFirst().orElse(null);
-        if(user != null) {
-            // Pending
-            //addRoles(user);
-        }
+
         return user;
     }
 
