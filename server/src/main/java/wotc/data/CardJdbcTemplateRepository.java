@@ -79,10 +79,12 @@ public class CardJdbcTemplateRepository implements CardRepository{
                 return 4;
             case INSTANT:
                 return 5;
-            case SORCERY:
+            case PLANESWALKER:
                 return 6;
-            case BATTLE:
+            case SORCERY:
                 return 7;
+            case BATTLE:
+                return 8;
             default:
                 throw new IllegalArgumentException("Unknown CardType: " + type);
         }
