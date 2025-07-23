@@ -370,17 +370,17 @@ An enum with four values: Common, Uncommon, Rare, Mythic
 * [x] Configure environment variables (Roger | 0.5 hour)
 
 ### Server
-* [x] Add Spring DI and Mocking to the project (Roger | 0.5 hours)
+* [ ] Add Spring DI and Mocking to the project (Roger | 0.5 hours)
 * [x] Create models (Taylor | 0.5 hours)
 * [ ] Implement repositories
     * [x] Repository for fetching users (Nikolas | 1 hour)
-    * [x] Repository for fetching cards (Roger | 1 hour)
+    * [ ] Repository for fetching cards (Roger | 1 hour)
     * [x] Repository for fetching collections/collected cards (Taylor | 2 hour)
-    * [x] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
+    * [ ] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
 * [ ] Implement services
     * [ ] Service for users (Nikolas | 1 hour)
-    * [ ] Service for cards (Roger | 1 hour)
-    * [x] Service for collections (Taylor | 2 hours)
+    * [ ] Service for cards (Taylor | 1 hour)
+    * [ ] Service for collections (Roger | 2 hours)
     * [ ] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
 * [ ] Implement controllers
     * [ ] Controller for users (Nikolas | 1 hour)

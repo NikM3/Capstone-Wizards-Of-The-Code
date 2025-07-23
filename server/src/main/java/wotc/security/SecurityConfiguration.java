@@ -11,8 +11,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import wotc.models.Role;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -29,20 +27,15 @@ public class SecurityConfiguration {
 
 
         http.csrf(csrf -> csrf.disable())
-                //.cors(withDefaults())
                 .authorizeHttpRequests(request -> request.requestMatchers(
                                 "/login",
                                 "/register",
                                 "/refresh",
-                                "/validateToken",
-                                "/api/card")
+                                "/validateToken")
 
                         .permitAll()
-                        .requestMatchers("/admin/**", "/api/admin/**").hasAuthority(Role.ADMIN.name())
-                        .requestMatchers("/user/**", "/api/user/**",
-                                "/api/collection/**", "/api/collected/card/**",
-                                "/api/card").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
-
+                        .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers("/user/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                         .anyRequest().authenticated())
 
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

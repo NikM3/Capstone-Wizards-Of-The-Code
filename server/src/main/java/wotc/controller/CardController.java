@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/card")
-@CrossOrigin
 public class CardController {
 
     private final CardService service;
@@ -36,9 +35,13 @@ public class CardController {
         return ErrorResponse.build(result);
     }
 
-    @PostMapping("/database")
-    public boolean runScryfallUpdate() throws Exception {
-        return service.runScryfallUpdate();
+    public ResponseEntity<Object> updateDatabase() {
+        // TODO: Start the process of pulling today's bulk download from Scryfall and update the local database
+        // 1) Access the Scryfall API and do the bulk download
+        // 2) Loop or wait on a Promise until the download is finished
+        // 3) Drop the old table
+        // 4) Repopulate with the downloaded data
+        return null;
     }
 
 }
