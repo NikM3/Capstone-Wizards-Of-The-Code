@@ -12,6 +12,10 @@ public class CollectionService {
         this.repository = repository;
     }
 
+    public Collection findCollectionByCollectionId(int collectionId) {
+        return repository.findCollectionByCollectionId(collectionId);
+    }
+
     public Collection findCollectionByUserId(int userID) {
         return repository.findCollectionByUserId(userID);
     }
