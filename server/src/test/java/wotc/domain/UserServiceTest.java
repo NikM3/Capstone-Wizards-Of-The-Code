@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import wotc.data.UserRepository;
 import wotc.models.Collection;
 import wotc.models.Role;
@@ -20,10 +21,10 @@ class UserServiceTest {
     @Autowired
     UserService service;
 
-    @MockBean
+    @MockitoBean
     AuthenticationService authenticationService;
 
-    @MockBean
+    @MockitoBean
     UserRepository repository;
 
     @Test

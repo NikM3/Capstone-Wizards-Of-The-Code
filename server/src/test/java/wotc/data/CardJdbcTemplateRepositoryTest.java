@@ -37,6 +37,15 @@ class CardJdbcTemplateRepositoryTest {
     }
 
     @Test
+    void shouldFindByChandrasOutrage() {
+        Card card = repository.findById("1");
+        assertNotNull(card);
+        assertEquals("1", card.getCardId());
+        assertEquals("Chandra's Outrage", card.getName());
+        assertEquals("4", card.getManaCost());
+    }
+
+    @Test
     void shouldUpdateDatabaseWithNewCard() {
         Card card = new Card();
         card.setCardId("999");

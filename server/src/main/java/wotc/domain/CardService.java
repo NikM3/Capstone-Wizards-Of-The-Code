@@ -23,6 +23,10 @@ public class CardService {
         return repository.findAll();
     }
 
+    public Card findById(String cardId) {
+        return repository.findById(cardId);
+    }
+
     public Result<Card> add(Card card) {
         Result<Card> result = validate(card);
 
