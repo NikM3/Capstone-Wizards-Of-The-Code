@@ -11,15 +11,15 @@ const CARD = {
     cardType: "",
     imageUri: "",
     manaCost: "",
-    name: ""
+    name: "",
+    cardText: "",
 }
 
 const COLLECTED_CARD = {
-    collectedCardId: "",
-    cardId: "",
-    collectionId: "",
+    cardId: 0,
+    collectionId: 1,
     quantity: 1,
-    condition: "",
+    condition: "Excellent",
     inUse: false
 }
 
@@ -29,10 +29,13 @@ function ViewCard() {
     const [card, setCard] = useState(CARD);
     const [collectedCard, setCollectedCard] = useState(COLLECTED_CARD);
     const url = `http://localhost:8080/api/card`;
+    const urlCollection = `http://localhost:8080/api/collection`;
+    const urlCollectionCard = `http://localhost:8080/api/collected/card`
     const navigate = useNavigate();
     const [errors, setErrors] = useState([]);
 
     useEffect(() => {
+        setCollectedCard(COLLECTED_CARD)
         const fetchCards = async () => {
             const token = localStorage.getItem('token');
             await fetch(`${url}/${cardId}`, {
@@ -41,56 +44,90 @@ function ViewCard() {
                     'Content-Type': 'application/json',
                 },
             })
-            .then(resp => {
-                if (resp.status === 200) {
-                    return resp.json();
-                } else {
-                    return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
-                }
-            })
-            .then(data => {
-                console.log("Card fetched:", data);
-                setCard(data);
-            })
-            .catch(console.log)
+                .then(resp => {
+                    if (resp.status === 200) {
+                        return resp.json();
+                    } else {
+                        return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
+                    }
+                })
+                .then(data => {
+                    console.log("Card fetched:", data);
+                    setCard(data);
+                    setCollectedCard(data.cardId ? { ...COLLECTED_CARD, cardId: data.cardId } : COLLECTED_CARD);
+                })
+                .catch(console.log)
         }
         fetchCards();
     }, [cardId]);
 
-    const handleSubmit = (e) => {
-        const token = localStorage.getItem('token');
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const init = {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(card)
+
+    const token = localStorage.getItem('token');
+    const email = localStorage.getItem('email');
+
+    const initGet = {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
         }
-        console.log("Submitting card:", JSON.stringify(card));
-        fetch(url, init)
-            .then(resp => {
-                if (resp.status === 201 || resp.status === 400) {
-                    return resp.json()
-                } else {
-                    return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
-                }
-            })
-            .then(data => {
-                if (data.agentId) {
-                    navigate('/home')
-                } else {
-                    setErrors(data)
-                }
-            })
-            .catch(console.log)
+    };
+
+    fetch(`${urlCollection}/email/${email}`, initGet)
+        .then(resp => {
+            if (!resp.ok) {
+                return Promise.reject(`GET error: ${resp.status}`);
+            }
+            return resp.json();
+        })
+        .then(data => {
+            const cardToSubmit = {
+                ...collectedCard,
+                collectionId: data.collectionId
+            };
+
+            console.log('Submitting card:', JSON.stringify(cardToSubmit));
+
+            const initPost = {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cardToSubmit)
+            };
+
+            return fetch(urlCollectionCard, initPost);
+        })
+        .then(resp => {
+            if (resp.status === 201 || resp.status === 400) {
+                return resp.json();
+            } else {
+                return Promise.reject(`POST error: ${resp.status}`);
+            }
+        })
+        .then(data => {
+            if (data) {
+                navigate('/home');
+            } else {
+                setErrors(data);
+            }
+        })
+        .catch(err => {
+            console.error('Error during submit:', err);
+        });
     }
 
     const handleChange = (event) => {
-        const newCard = { ...card };
-        newCard[event.target.name] = event.target.value;
-        setCard(newCard);
+        const newCollectedCard = { ...collectedCard };
+        if (event.target.type === 'checkbox') {
+            newCollectedCard[event.target.name] = event.target.checked;
+        } else {
+            newCollectedCard[event.target.name] = event.target.value;
+        }
+        setCollectedCard(newCollectedCard);
     }
 
 
@@ -101,13 +138,13 @@ function ViewCard() {
                 <div className="row mb-2 ">
                     <div className="col-8 mt-5">
                         <h3 className="mx-4 text-purple">{card.name}</h3>
-                        <p className="justy-text-left text-black mx-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a tempus dolor. Pellentesque eu ultricies dui. Aliquam lobortis aliquet venenatis. Pellentesque eleifend elit ac neque suscipit malesuada sed nec purus. Maecenas risus ligula, sollicitudin et orci nec, posuere suscipit tortor. In congue ornare eros sed facilisis. Donec faucibus rhoncus leo a rhoncus. Fusce at quam ac diam rutrum porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis vitae magna vitae sem dapibus sagittis. Phasellus vestibulum arcu neque, vel feugiat orci feugiat id. </p>
+                        <p className="justy-text-left text-black mx-4">{card.cardText}</p>
 
                         <h5 className="mx-4 mt-5 text-purple">Card Details: </h5>
                         <div className="row mx-2">
                             <div className="form-group col-4 mt-3">
                                 <label for="color" className="form-label">Color: </label>
-                                <input id="color" type="text" className="form-control form-control-lg" name="color" value={card} disabled />
+                                <input id="color" type="text" className="form-control form-control-lg" name="color" value={card.cardColors?.[0]} disabled />
                             </div>
                             <div className="form-group col-4 mt-3">
                                 <label for="manaCost" className="form-label">CMC (Mana Cost): </label>
@@ -129,15 +166,16 @@ function ViewCard() {
                             {addCard && (
                                 <form onSubmit={handleSubmit} className="row">
                                     <div className="form-group col-4 mt-3">
-                                        <label for="quantity" className="form-label">Quantity: </label>
-                                        <input id="quantity" type="number" className="form-control form-control-lg" value={card.c} min="1" name="quantity" onChange={handleChange}/>
+                                        <label htmlFor="quantity" className="form-label">Quantity: </label>
+                                        <input id="quantity" type="number" className="form-control form-control-lg" value={collectedCard.quantity}
+                                            name="quantity" max="1000000" min="1" onChange={handleChange} />
                                     </div>
                                     <div className="form-group col-4 mt-3">
                                         <label htmlFor="condition" className="form-label">Condition: </label>
                                         <select
                                             id="condition" name="condition" className="form-control form-control-lg"
-                                        //value={form.condition}
-                                        //onChange={handleChange}
+                                            value={collectedCard.condition}
+                                            onChange={handleChange}
                                         >
                                             <option value="Excellent">Excellent</option>
                                             <option value="Good">Good</option>
@@ -147,7 +185,10 @@ function ViewCard() {
                                     </div>
                                     <div className="form-group col-4 mt-3">
                                         <label htmlFor="inUse" className="form-label">In use?: </label>
-                                        <input type="checkbox" id="inUse" name="inUse" className="mx-3 form-check-input" />
+                                        <input type="checkbox" id="inUse" name="inUse" className="mx-3 form-check-input"
+                                            value={collectedCard.inUse}
+                                            onChange={handleChange}
+                                        />
                                     </div>
                                     <button type="submit" className="btn btn-lg bg-light-blue text-white mt-3 col-4 mt-2 my-2">Add Card</button>
                                 </form>
@@ -159,7 +200,7 @@ function ViewCard() {
 
                     </div>
                     <div className="col-4 mt-5 align-items-center d-flex justify-content-center">
-                        <img src="https://cards.scryfall.io/large/front/d/f/dfd977dc-a7c3-4d0a-aca7-b25bd154e963.jpg?1721426785" alt="magic the gathering card" className="img-fluid card-image" />
+                        <img src={card.imageUri} alt="magic the gathering card" className="img-fluid card-image" />
                     </div>
                 </div>
             </div>

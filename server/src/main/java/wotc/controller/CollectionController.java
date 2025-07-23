@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/collection")
+@CrossOrigin
 public class CollectionController {
 
     private final CollectionService service;
