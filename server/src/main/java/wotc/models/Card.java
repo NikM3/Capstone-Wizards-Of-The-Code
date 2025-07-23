@@ -3,7 +3,7 @@ package wotc.models;
 import java.util.List;
 
 public class Card {
-    private int cardId;
+    private String cardId;
     private String name;
     private String manaCost;
     private CardType cardType;
@@ -18,7 +18,7 @@ public class Card {
     }
 
     // Constructor for testing
-    public Card(int cardId, String name, String manaCost, CardType cardType, List<CardColor> cardColors, CardRarity cardRarity, String cardSet, String imageUri) {
+    public Card(String cardId, String name, String manaCost, CardType cardType, List<CardColor> cardColors, CardRarity cardRarity, String cardSet, String imageUri) {
         this.cardId = cardId;
         this.name = name;
         this.manaCost = manaCost;
@@ -31,11 +31,11 @@ public class Card {
 
    // Getters and setters
 
-    public int getCardId() {
+    public String getCardId() {
         return cardId;
     }
 
-    public void setCardId(int cardId) {
+    public void setCardId(String cardId) {
         this.cardId = cardId;
     }
 

@@ -11,6 +11,7 @@ import wotc.models.CardType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,7 +39,7 @@ class CardJdbcTemplateRepositoryTest {
     @Test
     void shouldUpdateDatabaseWithNewCard() {
         Card card = new Card();
-        card.setCardId(999);
+        card.setCardId("999");
         card.setName("Test Card");
         card.setManaCost("3");
         card.setCardType(CardType.INSTANT);
@@ -52,7 +53,7 @@ class CardJdbcTemplateRepositoryTest {
 
         List<Card> cards = repository.findAll();
         Card actual = cards.stream()
-                .filter(c -> c.getCardId() == 999)
+                .filter(c -> Objects.equals(c.getCardId(), "999"))
                 .findFirst()
                 .orElse(null);
 
@@ -71,7 +72,7 @@ class CardJdbcTemplateRepositoryTest {
     @Test
     void shouldRollbackOnInvalidCardData() {
         Card goodCard = new Card();
-        goodCard.setCardId(999);
+        goodCard.setCardId("999");
         goodCard.setName("Good Card");
         goodCard.setManaCost("3");
         goodCard.setCardType(CardType.CREATURE);
@@ -81,7 +82,7 @@ class CardJdbcTemplateRepositoryTest {
         goodCard.setImageUri("good-uri");
 
         Card badCard = new Card();
-        badCard.setCardId(1000);
+        badCard.setCardId("1000");
         badCard.setName("Bad Card");
         badCard.setManaCost("4");
         badCard.setCardType(null); // Invalid: will cause exception
@@ -95,8 +96,13 @@ class CardJdbcTemplateRepositoryTest {
 
         // confirm nothing was inserted
         List<Card> cards = repository.findAll();
-        assertTrue(cards.stream().noneMatch(c -> c.getCardId() == 999));
-        assertTrue(cards.stream().noneMatch(c -> c.getCardId() == 1000));
+        assertTrue(cards.stream().noneMatch(c -> Objects.equals(c.getCardId(), "999")));
+        assertTrue(cards.stream().noneMatch(c -> Objects.equals(c.getCardId(), "1000")));
     }
 
+    /* This test takes two minutes to run, I do not advise uncommenting, but I'm not your boss */
+//    @Test
+//    void shouldUpdateFromScryfall() throws Exception {
+//        assertTrue(repository.runScryfallUpdate());
+//    }
 }

@@ -1,23 +1,47 @@
 package wotc.data;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import wotc.data.mappers.CardMapper;
-import wotc.models.Card;
-import wotc.models.CardColor;
-import wotc.models.CardRarity;
-import wotc.models.CardType;
+import wotc.models.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @Repository
 public class CardJdbcTemplateRepository implements CardRepository{
 
     private final JdbcTemplate jdbcTemplate;
+    private final File directory;
+    private final String filename = "scryfall-cards.JSON";
 
-    public CardJdbcTemplateRepository(JdbcTemplate jdbcTemplate) {
+    public CardJdbcTemplateRepository(@Value("${cardDataFilePath:./data/scryfall/}") String directory, JdbcTemplate jdbcTemplate) {
+        this.directory = new File(directory);
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -54,8 +78,8 @@ public class CardJdbcTemplateRepository implements CardRepository{
         for (Card card : cards) {
             jdbcTemplate.update(insertSql,
                     card.getCardId(),
-                    getCardTypeId(card.getCardType()),
-                    getRarityId(card.getCardRarity()),
+                    card.getCardType().getId(),
+                    card.getCardRarity().getId(),
                     card.getName(),
                     card.getManaCost(),
                     getColorIdentityString(card.getCardColors()),
@@ -64,43 +88,6 @@ public class CardJdbcTemplateRepository implements CardRepository{
             );
         }
         return true;
-    }
-
-    // Helper methods
-    private int getCardTypeId(CardType type) {
-        switch (type) {
-            case ARTIFACT:
-                return 1;
-            case CREATURE:
-                return 2;
-            case ENCHANTMENT:
-                return 3;
-            case LAND:
-                return 4;
-            case INSTANT:
-                return 5;
-            case SORCERY:
-                return 6;
-            case BATTLE:
-                return 7;
-            default:
-                throw new IllegalArgumentException("Unknown CardType: " + type);
-        }
-    }
-
-    private int getRarityId(CardRarity rarity) {
-        switch (rarity) {
-            case COMMON:
-                return 1;
-            case UNCOMMON:
-                return 2;
-            case RARE:
-                return 3;
-            case MYTHIC:
-                return 4;
-            default:
-                throw new IllegalArgumentException("Unknown CardRarity: " + rarity);
-        }
     }
 
     private String getColorIdentityString(List<CardColor> colors) {
@@ -113,5 +100,165 @@ public class CardJdbcTemplateRepository implements CardRepository{
             sb.append(color.getAbbreviation());
         }
         return sb.toString();
+    }
+
+    @Transactional
+    public boolean runScryfallUpdate() throws Exception {
+        boolean actionCompleted = false;
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.scryfall.com/bulk-data"))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        ObjectMapper mapper = new ObjectMapper();
+        ScryfallBulkResponse scryfallBulkResponse = mapper.readValue(response.body(), ScryfallBulkResponse.class);
+
+        Optional<ScryfallBulkData> defaultCards = scryfallBulkResponse.getData().stream().filter(data -> data.getType().equals("default_cards")).findFirst();
+
+        if (defaultCards.isPresent()) {
+            String cardDataUrl = defaultCards.get().getDownload_uri();
+            // System.out.println(cardDataUri);
+
+            Path outputPath = Paths.get(directory + "/" + filename);
+
+            downloadFile(cardDataUrl, outputPath);
+
+            if(populateLocalDatabase()) {
+                System.out.println("Database updated, please double check in SqlWorkbench");
+                for (File file : Objects.requireNonNull(directory.listFiles())) {
+                    if (!file.isDirectory()) {
+                        file.delete();
+                    }
+                }
+                actionCompleted = true;
+            } else {
+                System.out.println("Something went wrong");
+            }
+        }
+
+        return actionCompleted;
+    }
+
+    public static void downloadFile(String fileUrl, Path outputPath) throws IOException, InterruptedException {
+        Files.createDirectories(outputPath.getParent());
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(fileUrl))
+                .build();
+
+        HttpResponse<Path> response = client.send(request, HttpResponse.BodyHandlers.ofFile(outputPath));
+
+        if (response.statusCode() == 200) {
+            System.out.println("File saved to: " + response.body());
+        } else {
+            throw new IOException("Download failed with status: " + response.statusCode());
+        }
+    }
+
+    private String getJsonFromFile() throws IOException {
+        Path path = Paths.get(directory.toString(), filename);
+        return Files.readString(path, StandardCharsets.UTF_8);
+    }
+
+    private boolean populateLocalDatabase() throws IOException {
+        final String sql = "insert into card (card_id, card_type_id, rarity_id, card_name, mana_cost, color_identity, `set`, image_uri) " +
+                "values (?, ?, ?, ?, ?, ?, ?, ?) " +
+                "on duplicate key update " +
+                "card_name = values(card_name), " +
+                "mana_cost = values(mana_cost), " +
+                "color_identity = values(color_identity), " +
+                "`set` = values(`set`), " +
+                "image_uri = values(image_uri)";
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayNode cardsJson = (ArrayNode) mapper.readTree(getJsonFromFile());
+
+            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    JsonNode node = cardsJson.get(i);
+
+                    Card card = makeCard(node, i);
+
+                    ps.setString(1, card.getCardId());
+                    ps.setInt(2, card.getCardType().getId());
+                    ps.setInt(3, card.getCardRarity().getId());
+                    ps.setString(4, card.getName());
+                    ps.setString(5, card.getManaCost());
+                    ps.setString(6, getColorIdentityString(card.getCardColors()));
+                    ps.setString(7, card.getCardSet());
+                    ps.setString(8, card.getImageUri());
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return cardsJson.size();
+                }
+            });
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private String parseText(JsonNode node, String key) {
+        return node.hasNonNull(key) ? node.get(key).asText() : "";
+    }
+
+    private Card makeCard(JsonNode node, int index) throws SQLException {
+        // cardId, setName, and rarity are always outside of card_faces and may be safely parsed
+        String cardId = parseText(node, "id");
+        String setName = parseText(node, "set_name");
+        CardRarity rarity = CardRarity.findByName(parseText(node, "rarity"));
+
+        // remaining variables might be nested inside card_faces so double check if blank. Only worry about the front face
+        String typeLine = parseText(node, "type_line");
+        if (typeLine.isBlank() && node.has("card_faces")) {
+            typeLine = parseText(node.get("card_faces").get(0), "type_line");
+        }
+
+        String cardName = parseText(node, "name");
+        if (cardName.isBlank() && node.has("card_faces")) {
+            cardName = parseText(node.get("card_faces").get(0), "name");
+        }
+
+        String manaCost = parseText(node, "mana_cost");
+        if (manaCost.isBlank() && node.has("card_faces")) {
+            manaCost = parseText(node.get("card_faces").get(0), "mana_cost");
+        }
+
+        // Make a list of CardColor, stored as an array in the JSON
+        JsonNode colorsNode = node.get("color_identity");
+        List<CardColor> colorIdentity = new ArrayList<>();
+        if (colorsNode != null && colorsNode.isArray()) {
+            for (JsonNode color : colorsNode) {
+                try {
+                    colorIdentity.add(CardColor.findByAbbreviation(color.asText()));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Could not find color value: " + color.asText());
+                }
+            }
+        }
+
+        // A card might not have an image
+        String imageUrl = "";
+        if (node.has("image_uris") && node.get("image_uris").has("normal")) {
+            imageUrl = node.get("image_uris").get("normal").asText();
+        }
+
+        // Fail if required fields are missing
+        if (cardId.isBlank() || cardName.isBlank() || typeLine.isBlank() || setName.isBlank()) {
+            throw new SQLException("Missing required fields for card at index " + index);
+        }
+
+        return new Card(cardId, cardName, manaCost, CardType.findByName(typeLine), colorIdentity, rarity, setName, imageUrl);
     }
 }
