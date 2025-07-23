@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import wotc.data.CollectionRepository;
 import wotc.models.Collection;
 
@@ -15,7 +16,7 @@ class CollectionServiceTest {
     @Autowired
     CollectionService service;
 
-    @MockBean
+    @MockitoBean
     CollectionRepository repository;
 
     @Test
