@@ -9,6 +9,7 @@ public class Card {
     private CardType cardType;
     private List<CardColor> cardColors;
     private CardRarity cardRarity;
+    private String cardText;
     private String cardSet;
     private String imageUri;
 
@@ -18,13 +19,14 @@ public class Card {
     }
 
     // Constructor for testing
-    public Card(String cardId, String name, String manaCost, CardType cardType, List<CardColor> cardColors, CardRarity cardRarity, String cardSet, String imageUri) {
+    public Card(String cardId, String name, String manaCost, CardType cardType, List<CardColor> cardColors, CardRarity cardRarity, String cardText, String cardSet, String imageUri) {
         this.cardId = cardId;
         this.name = name;
         this.manaCost = manaCost;
         this.cardType = cardType;
         this.cardColors = cardColors;
         this.cardRarity = cardRarity;
+        this.cardText = cardText;
         this.cardSet = cardSet;
         this.imageUri = imageUri;
     }
@@ -77,6 +79,14 @@ public class Card {
 
     public void setCardRarity(CardRarity cardRarity) {
         this.cardRarity = cardRarity;
+    }
+
+    public String getCardText() {
+        return cardText;
+    }
+
+    public void setCardText(String cardText) {
+        this.cardText = cardText;
     }
 
     public String getCardSet() {
