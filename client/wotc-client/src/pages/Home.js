@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext';
 import ViewCard from './ViewCard';
 
+
 const CARD = {
     id: 1,
     imageUrl: "https://cards.scryfall.io/large/front/d/f/dfd977dc-a7c3-4d0a-aca7-b25bd154e963.jpg?1721426785",

@@ -2,6 +2,7 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../AuthContext";
 
 const CARD = {
     cardId: "",
@@ -28,18 +29,36 @@ function ViewCard() {
     const [card, setCard] = useState(CARD);
     const [collectedCard, setCollectedCard] = useState(COLLECTED_CARD);
     const url = `http://localhost:8080/api/card`;
-    const [token, setToken] = useState("");
     const navigate = useNavigate();
     const [errors, setErrors] = useState([]);
 
     useEffect(() => {
-        setToken(localStorage.getItem('token'));
-        // Fetch Card by ID
-        
-        setCard(CARD)
+        const fetchCards = async () => {
+            const token = localStorage.getItem('token');
+            await fetch(`${url}/${cardId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(resp => {
+                if (resp.status === 200) {
+                    return resp.json();
+                } else {
+                    return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
+                }
+            })
+            .then(data => {
+                console.log("Card fetched:", data);
+                setCard(data);
+            })
+            .catch(console.log)
+        }
+        fetchCards();
     }, [cardId]);
 
     const handleSubmit = (e) => {
+        const token = localStorage.getItem('token');
         e.preventDefault();
         const init = {
             method: 'POST',
@@ -81,14 +100,14 @@ function ViewCard() {
             <div className="container ">
                 <div className="row mb-2 ">
                     <div className="col-8 mt-5">
-                        <h3 className="mx-4 text-purple">{cardId}</h3>
+                        <h3 className="mx-4 text-purple">{card.name}</h3>
                         <p className="justy-text-left text-black mx-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a tempus dolor. Pellentesque eu ultricies dui. Aliquam lobortis aliquet venenatis. Pellentesque eleifend elit ac neque suscipit malesuada sed nec purus. Maecenas risus ligula, sollicitudin et orci nec, posuere suscipit tortor. In congue ornare eros sed facilisis. Donec faucibus rhoncus leo a rhoncus. Fusce at quam ac diam rutrum porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis vitae magna vitae sem dapibus sagittis. Phasellus vestibulum arcu neque, vel feugiat orci feugiat id. </p>
 
                         <h5 className="mx-4 mt-5 text-purple">Card Details: </h5>
                         <div className="row mx-2">
                             <div className="form-group col-4 mt-3">
                                 <label for="color" className="form-label">Color: </label>
-                                <input id="color" type="text" className="form-control form-control-lg" name="color" value={card.cardId} disabled />
+                                <input id="color" type="text" className="form-control form-control-lg" name="color" value={card} disabled />
                             </div>
                             <div className="form-group col-4 mt-3">
                                 <label for="manaCost" className="form-label">CMC (Mana Cost): </label>
