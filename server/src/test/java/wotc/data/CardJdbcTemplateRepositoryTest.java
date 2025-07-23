@@ -54,6 +54,7 @@ class CardJdbcTemplateRepositoryTest {
         card.setCardType(CardType.INSTANT);
         card.setCardRarity(CardRarity.RARE);
         card.setCardColors(Arrays.asList(CardColor.RED, CardColor.BLUE));
+        card.setCardText("Test text");
         card.setCardSet("Test Set");
         card.setImageUri("test-uri");
 
@@ -87,6 +88,7 @@ class CardJdbcTemplateRepositoryTest {
         goodCard.setCardType(CardType.CREATURE);
         goodCard.setCardRarity(CardRarity.COMMON);
         goodCard.setCardColors(List.of(CardColor.GREEN));
+        goodCard.setCardText("Good Card");
         goodCard.setCardSet("Good Set");
         goodCard.setImageUri("good-uri");
 
@@ -97,6 +99,7 @@ class CardJdbcTemplateRepositoryTest {
         badCard.setCardType(null); // Invalid: will cause exception
         badCard.setCardRarity(CardRarity.UNCOMMON);
         badCard.setCardColors(List.of(CardColor.BLACK));
+        goodCard.setCardText("Bad Card");
         badCard.setCardSet("Bad Set");
         badCard.setImageUri("bad-uri");
 
@@ -110,8 +113,8 @@ class CardJdbcTemplateRepositoryTest {
     }
 
     /* This test takes two minutes to run, I do not advise uncommenting, but I'm not your boss */
-    @Test
-    void shouldUpdateFromScryfall() throws Exception {
-        assertTrue(repository.runScryfallUpdate());
-    }
+//    @Test
+//    void shouldUpdateFromScryfall() throws Exception {
+//        assertTrue(repository.runScryfallUpdate());
+//    }
 }

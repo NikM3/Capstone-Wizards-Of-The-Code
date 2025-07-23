@@ -52,6 +52,7 @@ public class CardJdbcTemplateRepository implements CardRepository{
             "c.card_name, " +
             "c.mana_cost, " +
             "c.color_identity, " +
+            "c.card_text, " +
             "c.set, " +
             "c.image_uri, " +
             "ct.card_type AS card_type, " +
@@ -70,6 +71,7 @@ public class CardJdbcTemplateRepository implements CardRepository{
                 "c.card_name, " +
                 "c.mana_cost, " +
                 "c.color_identity, " +
+                "c.card_text, " +
                 "c.set, " +
                 "c.image_uri, " +
                 "ct.card_type AS card_type, " +
