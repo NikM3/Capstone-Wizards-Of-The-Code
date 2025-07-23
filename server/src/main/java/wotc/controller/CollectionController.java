@@ -21,9 +21,9 @@ public class CollectionController {
         this.service = service;
     }
 
-    @GetMapping("/{userId}")
-    public Collection findCollectionByUser(@PathVariable int userId) {
-        return service.findCollectionByUser(userId);
+    @GetMapping("/{userEmail}")
+    public Collection findCollectionByUserEmail(@PathVariable String userEmail) {
+        return service.findCollectionByUserEmail(userEmail);
     }
 
     @PostMapping

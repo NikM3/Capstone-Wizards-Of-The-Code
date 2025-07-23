@@ -12,8 +12,12 @@ public class CollectionService {
         this.repository = repository;
     }
 
-    public Collection findCollectionByUser(int userId) {
-        return repository.findCollectionByUser(userId);
+    public Collection findCollectionByUserId(int userID) {
+        return repository.findCollectionByUserId(userID);
+    }
+
+    public Collection findCollectionByUserEmail(String userEmail) {
+        return repository.findCollectionByUserEmail(userEmail);
     }
 
     public Result<Collection> add(Collection collection) {
