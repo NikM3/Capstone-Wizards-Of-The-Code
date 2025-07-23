@@ -120,8 +120,6 @@ begin
     (2,'user','user@mail.com','$2a$10$CVNkWJ5z/OBpqQ0NncBIueF7qDKFP3e5E573lEMpIIyO08eaLDz4y',0,'USER'),
     (3,'admin','admin@mail.com','$2a$10$MmuaTPFC39Xmod.Xg2CbfeprpWU6Msd.2sw3IrfCYVqtfc94frioe',0,'ADMIN');
 
-
-    
     insert into collection(collection_id, user_id, collection_name)
     values
     (1, 2, 'test collection');

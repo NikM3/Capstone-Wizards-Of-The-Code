@@ -9,6 +9,8 @@ import wotc.domain.UserService;
 import wotc.models.Collection;
 import wotc.models.User;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -17,6 +19,12 @@ public class AdminController {
 
     public AdminController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/findAll")
+    public ResponseEntity<List<User>> findAll() {
+        List<User> users = userService.findAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/FindUsername/{username}")
