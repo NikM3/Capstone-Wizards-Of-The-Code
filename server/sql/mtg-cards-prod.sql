@@ -72,11 +72,6 @@ create table collected_card (
 
 -- Static insertions that don't need to change between runs
 
-insert into role (role_id, role_name)
-values
-(1, 'Admin'),
-(2, 'Guest');
-
 insert into card_type (card_type_id, card_type)
 values
 (1, 'Artifact'),

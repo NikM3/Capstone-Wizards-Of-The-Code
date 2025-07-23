@@ -16,13 +16,15 @@ function Navbar() {
         <>
             <nav className="navbar navbar-light bg-purple text-white justify-content-between">
                 <div className="d-flex px-5 my-1 align-items-center">
-                    <h2 className=" mb-0 mr-4 ">Magic</h2>
+                    <Link to={'/home'} className="navbar-brand text-white">
+                        <h2 className=" mb-0 mr-4 ">Magic</h2>
+                    </Link>
                     <ul className="nav">
                         <li className="nav-item ">
                             <Link to={'/home'} className="mx-4 nav-link text-white link-size">Home</Link>
                         </li>
                         <li className="nav-item ">
-                            <Link to={'/home'} className="nav-link text-white link-size">My Collection</Link>
+                            <Link to={'/collection'} className="nav-link text-white link-size">My Collection</Link>
                         </li>
                         <li className="nav-item ">
                             {user?.roles?.[0]?.authority === 'ADMIN' && (
