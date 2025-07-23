@@ -22,8 +22,8 @@ class CollectionServiceTest {
     @Test
     void shouldFindCollection() {
         Collection expected = makeCollection();
-        when(repository.findCollectionByUser(1)).thenReturn(expected);
-        Collection actual = service.findCollectionByUser(1);
+        when(repository.findCollectionByUserId(1)).thenReturn(expected);
+        Collection actual = service.findCollectionByUserId(1);
 
         assertEquals(expected, actual);
     }
