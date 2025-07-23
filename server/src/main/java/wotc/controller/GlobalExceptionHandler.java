@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpClientErrorException.Forbidden.class)
     public ResponseEntity<ErrorResponse> forbiddenException(Exception ex) throws Exception {
-        System.out.println("Forbidden error occurred due to user auth");
+        System.out.println("Forbidden error occured due to user auth");
         return ErrorResponse.build("I'm sorry Dave, I'm afraid I can't do that. You don't have permission.");
     }
 }

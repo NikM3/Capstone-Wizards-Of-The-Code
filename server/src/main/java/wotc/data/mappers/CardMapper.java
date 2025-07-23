@@ -16,7 +16,7 @@ public class CardMapper implements RowMapper<Card> {
     @Override
     public Card mapRow(ResultSet rs, int i) throws SQLException {
         Card card = new Card();
-        card.setCardId(rs.getString("card_id"));
+        card.setCardId(rs.getInt("card_id"));
 
         // card_type_id
         String cardTypeStr = rs.getString("card_type");
