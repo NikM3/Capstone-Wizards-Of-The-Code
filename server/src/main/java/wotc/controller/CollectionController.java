@@ -48,18 +48,4 @@ public class CollectionController {
         }
         return ErrorResponse.build(result);
     }
-
-    @DeleteMapping("/{collectionId}")
-    public ResponseEntity<Void> delete(@PathVariable int collectionId) {
-        Result<Collection> result = service.deleteById(collectionId);
-
-        if (result.getType() == ResultType.NOT_FOUND) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        if (result.getType() == ResultType.INVALID) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 }

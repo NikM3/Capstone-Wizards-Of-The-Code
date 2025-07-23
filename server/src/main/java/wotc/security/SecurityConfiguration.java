@@ -34,8 +34,9 @@ public class SecurityConfiguration {
                                 "/validateToken")
 
                         .permitAll()
-                        .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
-                        .requestMatchers("/user/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                        .requestMatchers("/admin/**", "/api/admin/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers("/user/**", "/api/user/**", "/api/collection/**", "/api/collected/card/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+
                         .anyRequest().authenticated())
 
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
