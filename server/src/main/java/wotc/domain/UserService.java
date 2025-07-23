@@ -37,6 +37,24 @@ public class UserService {
         return result;
     }
 
+    public Result<User> update(User user) {
+        Result<User> result = validate(user);
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        if (user.getUserId() <= 0) {
+            result.addMessage("userId must be set for `update` operation", ResultType.INVALID);
+            return result;
+        }
+
+        if (!repository.update(user)) {
+            String msg = String.format("userId: %s, not found", user.getUserId());
+            result.addMessage(msg, ResultType.NOT_FOUND);
+        }
+        return result;
+    }
+
     public Result<User> delete(int userId) {
         Result<User> result = new Result<>();
         if (!repository.delete(userId)) {

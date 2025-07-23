@@ -116,6 +116,87 @@ class UserServiceTest {
     }
 
     @Test
+    void shouldUpdate() {
+        User user = makeUser();
+        when(repository.update(user)).thenReturn(true);
+
+        Result<User> result = service.update(user);
+
+        assertEquals(ResultType.SUCCESS, result.getType());
+    }
+
+    @Test
+    void shouldNotUpdateNull() {
+        Result<User> result = service.update(null);
+        assertEquals(ResultType.INVALID, result.getType());
+        assertNull(result.getPayload());
+    }
+
+    @Test
+    void shouldNotUpdateWithoutUsername() {
+        User user = makeUser();
+        user.setUserId(0);
+        user.setUsername("");
+        Result<User> result = service.update(user);
+
+        assertEquals(ResultType.INVALID, result.getType());
+        assertTrue(result.getMessages().get(0).contains("username is required"));
+    }
+
+    @Test
+    void shouldNotUpdateWithoutEmail() {
+        User user = makeUser();
+        user.setUserId(0);
+        user.setEmail("");
+        Result<User> result = service.update(user);
+
+        assertEquals(ResultType.INVALID, result.getType());
+        assertTrue(result.getMessages().get(0).contains("email is required"));
+    }
+
+    @Test
+    void shouldNotUpdateWithoutPassword() {
+        User user = makeUser();
+        user.setUserId(0);
+        user.setPassword("");
+        Result<User> result = service.update(user);
+
+        assertEquals(ResultType.INVALID, result.getType());
+        assertTrue(result.getMessages().get(0).contains("password is required"));
+    }
+
+    @Test
+    void shouldNotUpdateWithoutRole() {
+        User user = makeUser();
+        user.setUserId(0);
+        user.setRole(null);
+        Result<User> result = service.update(user);
+
+        assertEquals(ResultType.INVALID, result.getType());
+        assertTrue(result.getMessages().get(0).contains("role is required"));
+    }
+
+    @Test
+    void shouldNotUpdateWithoutId() {
+        User user = makeUser();
+        user.setUserId(0);
+
+        Result<User> result = service.update(user);
+        assertEquals(ResultType.INVALID, result.getType());
+        assertTrue(result.getMessages().get(0).contains("userId must be set for `update` operation"));
+    }
+
+    @Test
+    void shouldNotUpdateNonExistentUser() {
+        User user = makeUser();
+        user.setUserId(20);
+        when(repository.update(user)).thenReturn(false);
+
+        Result<User> result = service.update(user);
+        assertTrue(result.getMessages().get(0).contains(", not found"));
+    }
+
+    @Test
     void shouldDelete() {
         when(repository.delete(1)).thenReturn(true);
 
