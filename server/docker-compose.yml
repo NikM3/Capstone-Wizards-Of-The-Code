@@ -1,4 +1,5 @@
-version: '3.7'
+version: "3.8"
+
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
@@ -6,11 +7,8 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ports:
       - "9200:9200"
-    networks:
-      - esnet
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.4
@@ -19,9 +17,5 @@ services:
       - "5601:5601"
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    networks:
-      - esnet
-
-networks:
-  esnet:
-    driver: bridge
+    depends_on:
+      - elasticsearch
