@@ -9,5 +9,7 @@ public interface CardRepository {
 
     boolean updateDatabase(List<Card> cards);
 
+    boolean insert(Card card);
+
     boolean runScryfallUpdate() throws Exception;
 }
