@@ -9,6 +9,8 @@ import org.springframework.test.context.ActiveProfiles;
 import wotc.models.User;
 import wotc.security.JwtAuthenticationFilter;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -23,6 +25,14 @@ class UserJdbcTemplateRepositoryTest {
     @BeforeEach
     void setup() {
         knownGoodState.set();
+    }
+
+    @Test
+    void shouldFindAll() {
+        List<User> result = repository.findAll();
+
+        assertNotNull(result);
+        assertEquals(3, result.size());
     }
 
     @Test
