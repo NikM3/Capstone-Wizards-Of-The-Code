@@ -13,8 +13,8 @@
 * [ ] Research Elastic Search (Everybody | 2 hours)
 
 ### Infrastructure
-* [ ] Create docker container (Nikolas/Taylor | 1 hour)
-    * [ ] Test container startup (Nikolas/Taylor | 0.5 hours)
+* [X] Create docker container (Nikolas/Taylor | 1 hour)
+    * [X] Test container startup (Nikolas/Taylor | 0.5 hours)
 * [x] Build the database
     * [x] Write the DDL (Cesar | 1 hour)
     * [x] Write the DML for testing until API is implemented (Taylor | 1 hour)
@@ -34,7 +34,7 @@
     * [X] Service for cards (Taylor | 1 hour)
     * [X] Service for collections (Roger | 2 hours)
     * [X] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
-* [ ] Implement controllers
+* [X] Implement controllers
     * [X] Controller for users (Nikolas | 1 hour)
     * [X] Controller for cards (Taylor | 1 hour)
     * [X] Controller for collections (Roger | 1 hour)
