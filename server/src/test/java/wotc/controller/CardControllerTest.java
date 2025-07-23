@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CardControllerTest {
 
     @MockitoBean
-    CardRepository repository;
+    CardJdbcTemplateRepository cardJdbcTemplateRepository;
 
     @Autowired
     MockMvc mvc;
