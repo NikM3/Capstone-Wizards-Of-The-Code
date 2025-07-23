@@ -17,7 +17,7 @@ public class CardService {
     }
 
     public List<Card> findAll() {
-        return List.of();
+        return repository.findAll();
     }
 
     public Result<Card> add(Card card) {
