@@ -3,9 +3,9 @@ import Navbar from "../components/Navbar";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-function ViewCard() {
+function ViewCollectionCard() {
     const { id } = useParams();
-    const [addCard, setAddCard] = useState(false);
+    const [editCard, setEditCard] = useState(false);
 
     useEffect(() => {
         console.log("Fetch Card ID:", id);
@@ -16,7 +16,6 @@ function ViewCard() {
         e.preventDefault();
         console.log("Card added to collection");
     }
-
 
     return (
         <>
@@ -49,8 +48,31 @@ function ViewCard() {
                                 <label for="set" className="form-label">Set: </label>
                                 <input id="set" type="text" className="form-control form-control-lg" value="Magic" name="set" disabled />
                             </div>
+                            <div className="form-group col-4 mt-3">
+                                <label for="quantity" className="form-label">Quantity: </label>
+                                <input id="quantity" type="number" className="form-control form-control-lg" value="1" min="1" name="quantity" disabled />
+                            </div>
+                            <div className="form-group col-4 mt-3">
+                                <label htmlFor="condition" className="form-label">Condition: </label>
+                                <select
+                                    id="condition" name="condition" className="form-control form-control-lg"
+                                //value={form.condition}
+                                //onChange={handleChange}
+                                disabled
+                                >
+                                    <option value="Excellent">Excellent</option>
+                                    <option value="Good">Good</option>
+                                    <option value="Fair">Fair</option>
+                                    <option value="Poor">Poor</option>
+                                </select>
+                            </div>
+                            <div className="form-group col-4 mt-3">
+                                <label htmlFor="inUse" className="form-label">In use?: </label>
+                                <input type="checkbox" id="inUse" name="inUse" className="mx-3 form-check-input" disabled />
+                            </div>
+
                             <br />
-                            {addCard && (
+                            {!editCard && (
                                 <form onSubmit={handleSubmit} className="row">
                                     <div className="form-group col-4 mt-3">
                                         <label for="quantity" className="form-label">Quantity: </label>
@@ -77,7 +99,7 @@ function ViewCard() {
                                 </form>
                             )}
 
-                            <button className="btn btn-lg bg-blue col-4 text-white mt-3" onClick={() => setAddCard(prev => !prev)}>{addCard ? 'Cancel' : 'Add to My Collection'}</button>
+                            <button className="btn btn-lg bg-blue col-4 text-white mt-3" onClick={() => editCard(prev => !prev)}>{editCard ? 'Cancel' : 'Edit'}</button>
 
                         </div>
 
@@ -92,4 +114,4 @@ function ViewCard() {
     )
 }
 
-export default ViewCard;
+export default ViewCollectionCard;

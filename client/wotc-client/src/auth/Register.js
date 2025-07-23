@@ -1,32 +1,88 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { useAuth } from '../AuthContext';
+import AuthService from '../AuthService';
+
+const REGISTER_FORM = {
+    email: '',
+    password: '',
+    confirmPassword: '',
+    username: ''
+}
 
 function Register() {
+    const [registerForm, setRegisterForm] = useState(REGISTER_FORM);
+    const [message, setMessage] = useState('');
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/home');
+        }
+    }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (registerForm.password !== registerForm.confirmPassword) {
+            setMessage('Passwords do not match.');
+            console.log("Passwords do not match.");
+        }
+        try {
+            const resp = await AuthService.register(registerForm);
+        
+            if (resp.ok) {
+                const data = await resp.json();
+                await login(data.authenticationToken)
+                navigate('/home');
+            } else {
+                setMessage('Register failed. Please check your credentials.');
+            }
+        } catch(error) {
+            console.log(error)
+            setMessage('')
+        } 
+    }
+
+    const handleChange = (event) => {
+        const newRegisterForm = { ...registerForm };
+        newRegisterForm[event.target.name] = event.target.value;
+        setRegisterForm(newRegisterForm);
+    }
+
+
+
     return (
         <>
             <div className="row">
-                <div className="col-6 col-md-4 mx-auto mt-5">
-                    <div class="card">
-                        <h3 class="card-title mx-3 mt-4">Register</h3>
-                        <div class="card-body">
-                            <form>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email address</label>
-                                    <input type="email" class="form-control form-control-lg" id="email" placeholder="name@example.com" />
+                <div className="col-7 col-md-3 mx-auto mt-5">
+                    <div className="card">
+                        <h3 className="card-title mx-3 mt-4">Register</h3>
+                        <div className="card-body">
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label htmlFor="email" className="form-label">Email address</label>
+                                    <input type="email" className="form-control form-control-lg" id="email" name="email"
+                                    value={registerForm.email} onChange={handleChange} placeholder="name@example.com" />
                                 </div>
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control form-control-lg" id="username" placeholder="johndoe" />
+                                <div className="mb-3">
+                                    <label htmlFor="username" className="form-label">Username</label>
+                                    <input type="text" className="form-control form-control-lg" id="username" name="username"
+                                    value={registerForm.username} onChange={handleChange} placeholder="johndoe" />
                                 </div>
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control form-control-lg" id="password" placeholder="***********" />
+                                <div className="mb-3">
+                                    <label htmlFor="password" className="form-label">Password</label>
+                                    <input type="password" className="form-control form-control-lg" id="password" name="password" 
+                                    value={registerForm.password} onChange={handleChange} placeholder="***********" />
                                 </div>
-                                <div class="mb-3">
-                                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                    <input type="confirmPassword" class="form-control form-control-lg" id="confirmPassword" placeholder="***********" />
+                                <div className="mb-3">
+                                    <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+                                    <input type="password" className="form-control form-control-lg" name="confirmPassword" id="confirmPassword"
+                                    value={registerForm.confirmPassword} onChange={handleChange} placeholder="***********" />
                                 </div>
                                 <div className="col-10 col-md-8 mx-auto alignt-items-center text-center">
-                                    <button type="submit" class="btn btn-lg bg-blue text-white px-5 ">Register</button>
+                                    <button type="submit" className="btn btn-lg bg-blue text-white px-5 ">Register</button>
                                 </div>
                             </form>
                         </div>
