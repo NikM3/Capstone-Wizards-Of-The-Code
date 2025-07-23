@@ -1,7 +1,18 @@
+import { use } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 function ViewCard() {
+    const { id } = useParams();
+
+    useEffect(() => {
+        console.log("Fetch Card ID:", id);
+        
+    }, [id]);
+
+
     return (
         <>
             <Navbar />

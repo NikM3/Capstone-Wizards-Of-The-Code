@@ -1,12 +1,22 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CardItem from '../components/CardItem'
+import { useNavigate } from 'react-router-dom';
 const CARD = {
+    id: 1,
     imageUrl: "https://cards.scryfall.io/large/front/d/f/dfd977dc-a7c3-4d0a-aca7-b25bd154e963.jpg?1721426785",
     name: "Example Card"
 }
 
+
 function Home() {
+    const navigate = useNavigate();
+
+    const handleCardView = (cardId) => {
+        console.log("Card ID:", cardId);
+        navigate(`/view-card/${cardId}`);
+    }
+
     return (
         <>
             <Navbar />
@@ -16,7 +26,7 @@ function Home() {
                         <form className="form-inline ">
                             <div className="form-group mx-2 d-flex">
                                 <input type="text" className="form-control form-control-lg mr-sm-2" placeholder="Search for cards..." />
-                                <button class="btn btn-lg bg-blue text-white my-2 my-sm-0" type="submit">Search</button>
+                                <button className="btn btn-lg bg-blue text-white my-2 my-sm-0" type="submit">Search</button>
                             </div>
 
                             <div className="form-group d-flex align-items-center flex-wrap mt-2">
@@ -68,8 +78,8 @@ function Home() {
                         </form>
 
                         <div className="row mt-4 ">
-                            <CardItem card={CARD} />
-                            <CardItem card={CARD} />
+                            <CardItem card={CARD} onClick={() => handleCardView(CARD.id)} />
+                            <CardItem card={CARD} onClick={() => handleCardView(CARD.id)} />
                             <CardItem card={CARD} />
                             <CardItem card={CARD} />
                             <CardItem card={CARD} />
