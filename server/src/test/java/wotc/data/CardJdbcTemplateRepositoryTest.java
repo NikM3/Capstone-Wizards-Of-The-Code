@@ -101,8 +101,8 @@ class CardJdbcTemplateRepositoryTest {
     }
 
     /* This test takes two minutes to run, I do not advise uncommenting, but I'm not your boss */
-    @Test
-    void shouldUpdateFromScryfall() throws Exception {
-        assertTrue(repository.runScryfallUpdate());
-    }
+//    @Test
+//    void shouldUpdateFromScryfall() throws Exception {
+//        assertTrue(repository.runScryfallUpdate());
+//    }
 }
