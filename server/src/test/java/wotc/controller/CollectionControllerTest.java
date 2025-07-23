@@ -16,7 +16,6 @@ import wotc.models.CollectedCard;
 import wotc.models.Role;
 import wotc.models.User;
 import wotc.models.UserRole;
-//import wotc.security.AuthenticationService;
 
 import java.util.List;
 
@@ -36,9 +35,6 @@ public class CollectionControllerTest {
 
     @Autowired
     MockMvc mvc;
-
-//    @Autowired
-//    AuthenticationService service;
 
     String token;
 

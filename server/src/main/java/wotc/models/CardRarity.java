@@ -4,7 +4,9 @@ public enum CardRarity {
     COMMON(1, "Common"),
     UNCOMMON(2, "Uncommon"),
     RARE(3, "Rare"),
-    MYTHIC(4, "Mythic");
+    MYTHIC(4, "Mythic"),
+    SPECIAL(5, "Special"),
+    BONUS(6, "Bonus");
 
     private final int id;
     private final String name;
