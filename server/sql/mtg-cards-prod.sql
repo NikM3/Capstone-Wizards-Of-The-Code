@@ -4,10 +4,6 @@ use mtg_cards;
 
 -- Create the tables and their relationships
 -- First tables with no dependencies
-create table `role` (
-	role_id int primary key auto_increment,
-    role_name varchar(50) not null
-);
 
 create table `user` (
     user_id int primary key auto_increment,
@@ -30,20 +26,6 @@ create table rarity (
 
 -- Tables with dependencies
 
-create table user_role (
-	user_id int not null,
-    role_id int not null,
-
-    constraint pk_user_role
-		primary key (user_id, role_id),
-	constraint fk_user_role_user_id
-		foreign key (user_id)
-        references `user`(user_id),
-	constraint fk_user_role_role_id
-		foreign key (role_id)
-        references `role`(role_id)
-);
-
 create table collection (
 	collection_id int primary key auto_increment,
     user_id int not null,
@@ -55,13 +37,13 @@ create table collection (
 );
 
 create table card (
-	card_id int primary key auto_increment,
+	card_id varchar(36) primary key,
     card_type_id int not null,
     rarity_id int not null,
-    card_name varchar(50) not null,
-    mana_cost varchar(50) not null,
-    color_identity varchar(20) not null,
-    `set` varchar(30) not null,
+    card_name varchar(200) not null,
+    mana_cost varchar(100) not null,
+    color_identity varchar(100) not null,
+    `set` varchar(100) not null,
     image_uri varchar(200) not null,
 
     constraint fk_card_card_type_id
@@ -74,7 +56,7 @@ create table card (
 
 create table collected_card (
 	collected_card_id int primary key auto_increment,
-    card_id int not null,
+    card_id varchar(36) not null,
     collection_id int not null,
     quantity int not null,
     `condition` varchar(20),
@@ -87,3 +69,27 @@ create table collected_card (
 		foreign key (collection_id)
         references collection (collection_id)
 );
+
+-- Static insertions that don't need to change between runs
+
+insert into card_type (card_type_id, card_type)
+values
+(1, 'Artifact'),
+(2, 'Creature'),
+(3, 'Enchantment'),
+(4, 'Land'),
+(5, 'Instant'),
+(6, 'Planeswalker'),
+(7, 'Sorcery'),
+(8, 'Battle'),
+(9, 'Unknown');
+
+
+insert into rarity (rarity_id, rarity)
+values
+(1, 'Common'),
+(2, 'Uncommon'),
+(3, 'Rare'),
+(4, 'Mythic'),
+(5, 'Special'),
+(6, 'Bonus');
