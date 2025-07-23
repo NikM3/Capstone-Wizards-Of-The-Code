@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import wotc.data.CardRepository;
 import wotc.data.CardSearchRepository;
 import wotc.models.CardSearch;
@@ -38,16 +38,15 @@ class CardSearchServiceTest {
         cs.setName("Lightning Bolt");
         cs.setType("Instant");
 
-        // Mock the SearchHit
         SearchHit<CardSearch> mockHit = mock(SearchHit.class);
         when(mockHit.getContent()).thenReturn(cs);
 
-        // Mock the SearchHits
         SearchHits<CardSearch> mockHits = mock(SearchHits.class);
-        when(mockHits.getSearchHits()).thenReturn(List.of(mockHit));
+        when(mockHits.stream()).thenReturn(List.of(mockHit).stream());
 
-        // Stub elasticsearchOperations.search to return mockHits
-        when(elasticsearchOperations.search((Query) any(), eq(CardSearch.class))).thenReturn(mockHits);
+        when(elasticsearchOperations.search(any(NativeQuery.class), eq(CardSearch.class)))
+                .thenReturn(mockHits);
+
 
         // Act
         List<CardSearchResultDTO> results = service.fuzzySearch("light");

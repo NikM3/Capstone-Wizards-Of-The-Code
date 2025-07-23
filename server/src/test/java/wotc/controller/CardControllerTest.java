@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-//package wotc.controller;
-=======
 package wotc.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -47,43 +44,6 @@ public class CardControllerTest {
     @Autowired
     MockMvc mvc;
 
-    @Test
-    void addShouldReturn400WhenEmpty() throws Exception {
->>>>>>> 43afac437e4777f69977ba766bc9875aeb080cc1
-//
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.context.bean.override.mockito.MockitoBean;
-//import org.springframework.test.web.servlet.MockMvc;
-//import wotc.data.CardRepository;
-//import wotc.models.*;
-//
-//import java.net.URI;
-//import java.net.http.HttpClient;
-//import java.net.http.HttpRequest;
-//import java.net.http.HttpResponse;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.when;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-//
-//@SpringBootTest
-//@AutoConfigureMockMvc
-//public class CardControllerTest {
-//
-//    @MockitoBean
-//    CardRepository repository;
-//
-<<<<<<< HEAD
-//    @Autowired
-//    MockMvc mvc;
 //
 //    @Test
 //    void addShouldReturn400WhenEmpty() throws Exception {
@@ -149,8 +109,6 @@ public class CardControllerTest {
 //                "values (?, ?, ?, ?, ?, ?, ?, ?)";
 //    }
 //}
-=======
-
     }
-}
->>>>>>> 43afac437e4777f69977ba766bc9875aeb080cc1
+
+

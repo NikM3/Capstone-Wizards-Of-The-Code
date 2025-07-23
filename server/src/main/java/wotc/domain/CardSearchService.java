@@ -15,11 +15,11 @@ import wotc.models.CardSearch;
 import wotc.models.CardSearchResultDTO;
 
 import java.util.List;
-
-
+import java.util.stream.Collectors;
 
 @Service
 public class CardSearchService {
+
     private final CardRepository cardRepository;
     private final CardSearchRepository cardSearchRepository;
     private final ElasticsearchOperations elasticsearchOperations;
@@ -32,6 +32,7 @@ public class CardSearchService {
     }
 
     // Sync all existing cards form DB into Elasticsearch
+    // Index all cards from MySQL into Elasticsearch
     public void syncAllCardsToSearchIndex() {
         List<Card> cards = cardRepository.findAll();
 
@@ -88,11 +89,12 @@ public class CardSearchService {
         SearchHits<CardSearch> hits = elasticsearchOperations.search(searchQuery, CardSearch.class);
 
         // Map the search hits to DTOs with just the data we want to return
-        return hits.getSearchHits().stream()
+        return hits.stream()
                 .map(hit -> {
                     CardSearch cs = hit.getContent();
                     return new CardSearchResultDTO(cs.getName(), cs.getType());
                 })
-                .toList();
+                .collect(Collectors.toList());
     }
 }
+
