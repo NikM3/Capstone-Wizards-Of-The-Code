@@ -4,10 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import wotc.data.UserRepository;
 import wotc.models.Collection;
 import wotc.models.Role;
 import wotc.models.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -17,11 +21,20 @@ class UserServiceTest {
     @Autowired
     UserService service;
 
-    @MockBean
+    @MockitoBean
     AuthenticationService authenticationService;
 
-    @MockBean
+    @MockitoBean
     UserRepository repository;
+
+    @Test
+    void shouldFindAll() {
+        User user = makeUser();
+        List<User> expected = new ArrayList<>(List.of(user));
+        when(repository.findAll()).thenReturn(expected);
+        List<User> actual = service.findAll();
+        assertEquals(expected.get(0), actual.get(0));
+    }
 
     @Test
     void shouldFindUserByUserName() {

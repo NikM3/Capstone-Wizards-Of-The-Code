@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import wotc.data.CardRepository;
 import wotc.data.CardSearchRepository;
@@ -31,6 +32,7 @@ class CardSearchServiceTest {
     }
 
     @Test
+
     void fuzzySearch_returnsPagedCardsSortedByName() {
         // Arrange
         CardSearch cs = new CardSearch();
@@ -42,6 +44,7 @@ class CardSearchServiceTest {
         when(mockHit.getContent()).thenReturn(cs);
 
         SearchHits<CardSearch> mockHits = mock(SearchHits.class);
+
         when(mockHits.getSearchHits()).thenReturn(List.of(mockHit));
         when(mockHits.getTotalHits()).thenReturn(1L);
 
@@ -173,5 +176,6 @@ class CardSearchServiceTest {
 
         Card resultCard = result.getContent().get(0);
         assertEquals("Lightning Bolt", resultCard.getName());
+
     }
 }

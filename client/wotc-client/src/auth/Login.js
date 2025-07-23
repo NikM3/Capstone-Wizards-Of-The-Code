@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import AuthService from '../AuthService';
+import parseJwt from '../utils/jwtUtils';
+import { useAuth } from '../AuthContext';
 
 const LOGIN_FORM = {
     email: '',
@@ -11,30 +13,29 @@ function Login() {
     const [loginForm, setLoginForm] = useState(LOGIN_FORM);
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth(); 
 
     useEffect(() => {
-        if (localStorage.getItem('token')) {
+        const token = localStorage.getItem('token');
+        if (token) {
             navigate('/home');
-        } else {
-            navigate('/');
         }
     }, []);
-
+    
     const handleSubmit = async (e) => {
-        console.log('Login form submitted:', loginForm);
         e.preventDefault();
         try {
             const resp = await AuthService.login(loginForm);
             if (resp.ok) {
                 const data = await resp.json();
-                localStorage.setItem('token', data.authenticationToken);
+                await login(data.authenticationToken)
                 navigate('/home');
             } else {
                 setMessage('Login failed. Please check your credentials.');
             }
         } catch(error) {
             setMessage('')
-        }
+        } 
     }
 
     const handleChange = (event) => {

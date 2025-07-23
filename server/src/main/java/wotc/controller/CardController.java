@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/card")
+@CrossOrigin
 public class CardController {
 
     private final CardService service;
@@ -22,6 +23,11 @@ public class CardController {
     @GetMapping()
     public List<Card> findAll() {
         return service.findAll();
+    }
+
+    @GetMapping("/{cardId}")
+    public Card findById(@PathVariable String cardId) {
+        return service.findById(cardId);
     }
 
     @PostMapping()

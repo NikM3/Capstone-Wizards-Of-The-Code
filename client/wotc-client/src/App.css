@@ -114,3 +114,9 @@ footer {
 .bg-blue:hover {
     background-color: rgb(121, 127, 180);
 }
+.bg-light-blue:hover {
+    background-color: #5b64b6;
+}
+.bg-red:hover{
+    background-color: #f6633a;
+}

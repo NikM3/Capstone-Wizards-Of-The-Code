@@ -1,5 +1,6 @@
 package wotc.domain;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import wotc.data.CardRepository;
 import wotc.data.CardSearchRepository;
 import wotc.models.Card;
 import wotc.models.CardSearch;
+
 import jakarta.annotation.PostConstruct;
 import wotc.models.PagedResult;
 
@@ -32,6 +34,7 @@ public class CardSearchService {
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
+
     public CardSearchService(CardRepository cardRepository,
                              CardSearchRepository cardSearchRepository,
                              ElasticsearchOperations elasticsearchOperations) {
@@ -39,6 +42,7 @@ public class CardSearchService {
         this.cardSearchRepository = cardSearchRepository;
         this.elasticsearchOperations = elasticsearchOperations;
     }
+
 
     // Index all cards from MySQL into Elasticsearch
     public void syncAllCardsToSearchIndex() {
@@ -50,6 +54,7 @@ public class CardSearchService {
 
         cardSearchRepository.saveAll(searchCards);
     }
+
 
     // Perform a fuzzy search by card name or type and return full Card objects
     public PagedResult<Card> fuzzySearch(String query, int page, int size, String sort, String direction) {
