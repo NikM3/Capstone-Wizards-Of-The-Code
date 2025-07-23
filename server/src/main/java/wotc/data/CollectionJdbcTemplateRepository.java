@@ -21,11 +21,30 @@ public class CollectionJdbcTemplateRepository implements CollectionRepository {
     }
 
     @Override
-    public Collection findCollectionByUser(int userId) {
+    public Collection findCollectionByCollectionId(int collectionId) {
+        final String sql = "select collection_id, user_id, collection_name "
+                + "from collection "
+                + "where collection_id= ?;";
+        return jdbcTemplate.query(sql, new CollectionMapper(), collectionId).stream()
+                .findFirst().orElse(null);
+    }
+
+    @Override
+    public Collection findCollectionByUserId(int userId) {
         final String sql = "select collection_id, user_id, collection_name "
                 + "from collection "
                 + "where user_id = ?;";
         return jdbcTemplate.query(sql, new CollectionMapper(), userId).stream()
+                .findFirst().orElse(null);
+    }
+
+    @Override
+    public Collection findCollectionByUserEmail(String userEmail) {
+        final String sql = "select c.collection_id, c.user_id, c.collection_name "
+                + "from collection c"
+                + "inner join user u on c.user_id = u.user_id"
+                + "where u.email = ?;";
+        return jdbcTemplate.query(sql, new CollectionMapper(), userEmail).stream()
                 .findFirst().orElse(null);
     }
 

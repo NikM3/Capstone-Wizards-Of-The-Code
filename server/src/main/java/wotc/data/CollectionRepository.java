@@ -6,7 +6,11 @@ import wotc.models.Collection;
 import java.util.List;
 
 public interface CollectionRepository {
-    Collection findCollectionByUser(int userId);
+    Collection findCollectionByCollectionId(int collectionId);
+
+    Collection findCollectionByUserId(int userId);
+
+    Collection findCollectionByUserEmail(String email);
 
     Collection add(Collection collection);
 
