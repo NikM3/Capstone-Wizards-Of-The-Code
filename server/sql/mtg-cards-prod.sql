@@ -4,10 +4,6 @@ use mtg_cards;
 
 -- Create the tables and their relationships
 -- First tables with no dependencies
-create table `role` (
-	role_id int primary key auto_increment,
-    role_name varchar(50) not null
-);
 
 create table `user` (
     user_id int primary key auto_increment,
@@ -29,20 +25,6 @@ create table rarity (
 );
 
 -- Tables with dependencies
-
-create table user_role (
-	user_id int not null,
-    role_id int not null,
-
-    constraint pk_user_role
-		primary key (user_id, role_id),
-	constraint fk_user_role_user_id
-		foreign key (user_id)
-        references `user`(user_id),
-	constraint fk_user_role_role_id
-		foreign key (role_id)
-        references `role`(role_id)
-);
 
 create table collection (
 	collection_id int primary key auto_increment,

@@ -1,0 +1,89 @@
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import CardItem from '../components/CardItem'
+const CARD = {
+    imageUrl: "https://cards.scryfall.io/large/front/d/f/dfd977dc-a7c3-4d0a-aca7-b25bd154e963.jpg?1721426785",
+    name: "Example Card"
+}
+
+function Home() {
+    return (
+        <>
+            <Navbar />
+            <div className="container">
+                <div className="row">
+                    <div className="col-12 col-md-10 mx-auto mt-5">
+                        <form className="form-inline ">
+                            <div className="form-group mx-2 d-flex">
+                                <input type="text" className="form-control form-control-lg mr-sm-2" placeholder="Search for cards..." />
+                                <button class="btn btn-lg bg-blue text-white my-2 my-sm-0" type="submit">Search</button>
+                            </div>
+
+                            <div className="form-group d-flex align-items-center flex-wrap mt-2">
+                                <p className="mb-0 mr-4">Color: </p>
+
+                                <div className="form-check form-check-inline ">
+                                    <input className="form-check-input" type="checkbox" id="red" />
+                                    <label className="form-check-label" htmlFor="red">Red</label>
+                                </div>
+
+                                <div className="form-check form-check-inline">
+                                    <input className="form-check-input" type="checkbox" id="blue" />
+                                    <label className="form-check-label" htmlFor="blue">Blue</label>
+                                </div>
+
+                                <div className="form-check form-check-inline">
+                                    <input className="form-check-input" type="checkbox" id="white" />
+                                    <label className="form-check-label" htmlFor="white">White</label>
+                                </div>
+
+                                <div className="form-check form-check-inline">
+                                    <input className="form-check-input" type="checkbox" id="green" />
+                                    <label className="form-check-label" htmlFor="green">Green</label>
+                                </div>
+                            </div>
+                            <div className="form-group d-flex align-items-center flex-wrap mt-2">
+                                <p className="mb-0 mr-4">Rarity: </p>
+
+                                <div className="form-check form-check-inline ">
+                                    <input className="form-check-input" type="checkbox" id="red" />
+                                    <label className="form-check-label" htmlFor="red">Red</label>
+                                </div>
+
+                                <div className="form-check form-check-inline">
+                                    <input className="form-check-input" type="checkbox" id="blue" />
+                                    <label className="form-check-label" htmlFor="blue">Blue</label>
+                                </div>
+
+                                <div className="form-check form-check-inline">
+                                    <input className="form-check-input" type="checkbox" id="white" />
+                                    <label className="form-check-label" htmlFor="white">White</label>
+                                </div>
+
+                                <div className="form-check form-check-inline">
+                                    <input className="form-check-input" type="checkbox" id="green" />
+                                    <label className="form-check-label" htmlFor="green">Green</label>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div className="row mt-4 ">
+                            <CardItem card={CARD} />
+                            <CardItem card={CARD} />
+                            <CardItem card={CARD} />
+                            <CardItem card={CARD} />
+                            <CardItem card={CARD} />
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+            <Footer />
+        </>
+    )
+}
+
+export default Home;
