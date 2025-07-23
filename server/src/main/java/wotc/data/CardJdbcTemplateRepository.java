@@ -63,22 +63,14 @@ public class CardJdbcTemplateRepository implements CardRepository{
         return jdbcTemplate.query(sql, new CardMapper());
     }
 
-    @Override
+
     public Card findById(String cardId) {
-        final String sql = "SELECT " +
-                "c.card_id, " +
-                "c.card_name, " +
-                "c.mana_cost, " +
-                "c.color_identity, " +
-                "c.set, " +
-                "c.image_uri, " +
-                "ct.card_type AS card_type, " +
-                "r.rarity AS card_rarity " +
-                "FROM card c " +
-                "JOIN card_type ct ON c.card_type_id = ct.card_type_id " +
-                "JOIN rarity r ON c.rarity_id = r.rarity_id " +
-                "WHERE card_id = ?;";
-        return jdbcTemplate.query(sql, new CardMapper(), cardId).stream().findFirst().orElse(null);
+        final String sql = "SELECT * FROM card WHERE card_id = ?;";
+
+        return jdbcTemplate.query(sql, new CardMapper(), cardId)
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
