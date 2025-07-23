@@ -14,7 +14,7 @@ function ViewCollectionCard() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Card added to collection");
+        console.log("Card Updated to collection");
     }
 
     return (
@@ -48,60 +48,60 @@ function ViewCollectionCard() {
                                 <label for="set" className="form-label">Set: </label>
                                 <input id="set" type="text" className="form-control form-control-lg" value="Magic" name="set" disabled />
                             </div>
-                            <div className="form-group col-4 mt-3">
-                                <label for="quantity" className="form-label">Quantity: </label>
-                                <input id="quantity" type="number" className="form-control form-control-lg" value="1" min="1" name="quantity" disabled />
-                            </div>
-                            <div className="form-group col-4 mt-3">
-                                <label htmlFor="condition" className="form-label">Condition: </label>
-                                <select
-                                    id="condition" name="condition" className="form-control form-control-lg"
-                                //value={form.condition}
-                                //onChange={handleChange}
-                                disabled
-                                >
-                                    <option value="Excellent">Excellent</option>
-                                    <option value="Good">Good</option>
-                                    <option value="Fair">Fair</option>
-                                    <option value="Poor">Poor</option>
-                                </select>
-                            </div>
-                            <div className="form-group col-4 mt-3">
-                                <label htmlFor="inUse" className="form-label">In use?: </label>
-                                <input type="checkbox" id="inUse" name="inUse" className="mx-3 form-check-input" disabled />
-                            </div>
+                            <form onSubmit={handleSubmit} className="row">
+                                <div className="form-group col-4 mt-3">
+                                    <label for="quantity" className="form-label">Quantity: </label>
+                                    <input id="quantity" type="number" className="form-control form-control-lg" value="1" min="1" name="quantity" disabled={!editCard} />
+                                </div>
+                                <div className="form-group col-4 mt-3">
+                                    <label htmlFor="condition" className="form-label">Condition: </label>
+                                    <select
+                                        id="condition" name="condition" className="form-control form-control-lg" disabled={!editCard}
+                                    //value={form.condition}
+                                    //onChange={handleChange}
+                                    >
+                                        <option value="Excellent">Excellent</option>
+                                        <option value="Good">Good</option>
+                                        <option value="Fair">Fair</option>
+                                        <option value="Poor">Poor</option>
+                                    </select>
+                                </div>
+                                <div className="form-group col-4 mt-3">
+                                    <label htmlFor="inUse" className="form-label">In use?: </label>
+                                    <input type="checkbox" id="inUse" name="inUse" disabled={!editCard} className="mx-3 form-check-input" />
+                                </div>
+                                {editCard && (
+                                    <button type="submit" className="btn btn-lg bg-light-blue text-white mt-3 col-4 mt-2 my-2">Update</button>
+                                )}
+                            </form>
 
                             <br />
+                            <button className="btn btn-lg bg-blue col-4 text-white mt-3" onClick={() => setEditCard(prev => !prev)}>{editCard ? 'Cancel' : 'Edit'}</button>
                             {!editCard && (
-                                <form onSubmit={handleSubmit} className="row">
-                                    <div className="form-group col-4 mt-3">
-                                        <label for="quantity" className="form-label">Quantity: </label>
-                                        <input id="quantity" type="number" className="form-control form-control-lg" value="1" min="1" name="quantity" />
-                                    </div>
-                                    <div className="form-group col-4 mt-3">
-                                        <label htmlFor="condition" className="form-label">Condition: </label>
-                                        <select
-                                            id="condition" name="condition" className="form-control form-control-lg"
-                                            //value={form.condition}
-                                            //onChange={handleChange}
-                                        >
-                                            <option value="Excellent">Excellent</option>
-                                            <option value="Good">Good</option>
-                                            <option value="Fair">Fair</option>
-                                            <option value="Poor">Poor</option>
-                                        </select>
-                                    </div>
-                                    <div className="form-group col-4 mt-3">
-                                        <label htmlFor="inUse" className="form-label">In use?: </label>
-                                        <input type="checkbox" id="inUse" name="inUse" className="mx-3 form-check-input" />
-                                    </div>
-                                    <button type="submit" className="btn btn-lg bg-light-blue text-white mt-3 col-4 mt-2 my-2">Add Card</button>
-                                </form>
+                                <button className="btn btn-lg bg-red col-4 text-white mt-3 mx-3" data-toggle="modal" data-target="#deleteModel" onClick={() => console.log("Card removed from collection")}>Delete</button>
                             )}
-
-                            <button className="btn btn-lg bg-blue col-4 text-white mt-3" onClick={() => editCard(prev => !prev)}>{editCard ? 'Cancel' : 'Edit'}</button>
-
                         </div>
+                        {/* Modal for deleting */}
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="deleteModel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModel">Modal title</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        ...
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                     </div>
                     <div className="col-4 mt-5 align-items-center d-flex justify-content-center">
