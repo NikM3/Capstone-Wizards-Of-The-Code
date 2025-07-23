@@ -24,7 +24,7 @@ class CollectionJdbcTemplateRepositoryTest {
 
     @Test
     void shouldFindByUserId() {
-        Collection myCollection = repository.findCollectionByUser(2);
+        Collection myCollection = repository.findCollectionByUserId(2);
         assertEquals(1, myCollection.getCollectionId());
         assertEquals(2, myCollection.getUserId());
         assertEquals("test collection", myCollection.getName());
@@ -32,7 +32,7 @@ class CollectionJdbcTemplateRepositoryTest {
 
     @Test
     void shouldNotFindCollectionWithNonExistentUser() {
-        Collection myCollection = repository.findCollectionByUser(1);
+        Collection myCollection = repository.findCollectionByUserId(1);
         assertNull(myCollection);
     }
 
@@ -53,11 +53,11 @@ class CollectionJdbcTemplateRepositoryTest {
 
     @Test
     void shouldEdit() {
-        Collection collection = repository.findCollectionByUser(2);
+        Collection collection = repository.findCollectionByUserId(2);
         collection.setName("updated collection name");
 
         assertTrue(repository.editCollection(collection));
-        assertEquals("updated collection name", repository.findCollectionByUser(2).getName());
+        assertEquals("updated collection name", repository.findCollectionByUserId(2).getName());
     }
 
     @Test

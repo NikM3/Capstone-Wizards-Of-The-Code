@@ -25,6 +25,11 @@ public class CardController {
         return service.findAll();
     }
 
+    @GetMapping("/{cardId}")
+    public Card findById(@PathVariable String cardId) {
+        return service.findById(cardId);
+    }
+
     @PostMapping()
     public ResponseEntity<Object> add(@RequestBody Card card) {
         Result<Card> result = service.add(card);
