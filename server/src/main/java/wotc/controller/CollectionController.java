@@ -21,7 +21,17 @@ public class CollectionController {
         this.service = service;
     }
 
-    @GetMapping("/{userEmail}")
+    @GetMapping("/{collectionId}")
+    public Collection findCollectionByCollectionId(@PathVariable int collectionId) {
+        return service.findCollectionByCollectionId(collectionId);
+    }
+
+    @GetMapping("/user/{userId}")
+    public Collection findCollectionByUserId(@PathVariable int userId) {
+        return service.findCollectionByUserId(userId);
+    }
+
+    @GetMapping("/email/{userEmail}")
     public Collection findCollectionByUserEmail(@PathVariable String userEmail) {
         return service.findCollectionByUserEmail(userEmail);
     }

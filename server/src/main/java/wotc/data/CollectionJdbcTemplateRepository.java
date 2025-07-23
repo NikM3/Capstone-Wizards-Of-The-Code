@@ -21,6 +21,15 @@ public class CollectionJdbcTemplateRepository implements CollectionRepository {
     }
 
     @Override
+    public Collection findCollectionByCollectionId(int collectionId) {
+        final String sql = "select collection_id, user_id, collection_name "
+                + "from collection "
+                + "where collection_id= ?;";
+        return jdbcTemplate.query(sql, new CollectionMapper(), collectionId).stream()
+                .findFirst().orElse(null);
+    }
+
+    @Override
     public Collection findCollectionByUserId(int userId) {
         final String sql = "select collection_id, user_id, collection_name "
                 + "from collection "
