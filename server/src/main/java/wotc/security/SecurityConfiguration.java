@@ -31,7 +31,8 @@ public class SecurityConfiguration {
                                 "/login",
                                 "/register",
                                 "/refresh",
-                                "/validateToken")
+                                "/validateToken",
+                                "/sync")
 
                         .permitAll()
                         .requestMatchers("/admin/**", "/api/admin/**").hasAuthority(Role.ADMIN.name())

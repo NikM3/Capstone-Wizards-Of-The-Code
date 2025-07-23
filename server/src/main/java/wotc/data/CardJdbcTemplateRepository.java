@@ -63,6 +63,24 @@ public class CardJdbcTemplateRepository implements CardRepository{
         return jdbcTemplate.query(sql, new CardMapper());
     }
 
+    @Override
+    public boolean insert(Card card) {
+        final String sql = "INSERT INTO card (card_id, card_type_id, rarity_id, card_name, mana_cost, color_identity, `set`, image_uri) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        return jdbcTemplate.update(sql,
+                card.getCardId(),
+                card.getCardType().getId(),
+                card.getCardRarity().getId(),
+                card.getName(),
+                card.getManaCost(),
+                getColorIdentityString(card.getCardColors()),
+                card.getCardSet(),
+                card.getImageUri()
+        ) > 0;
+    }
+
+
     @Transactional
     @Override
     public boolean updateDatabase(List<Card> cards) {

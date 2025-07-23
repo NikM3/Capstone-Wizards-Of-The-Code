@@ -16,17 +16,16 @@ function Login() {
     const { login } = useAuth(); 
 
     useEffect(() => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                navigate('/home');
-            }
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/home');
+        }
     }, []);
     
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const resp = await AuthService.login(loginForm);
-            console.log("Login resp:", resp);
             if (resp.ok) {
                 const data = await resp.json();
                 await login(data.authenticationToken)
