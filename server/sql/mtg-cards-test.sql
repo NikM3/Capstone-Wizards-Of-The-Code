@@ -104,7 +104,6 @@ begin
     alter table card auto_increment = 1;
     delete from collection;
     alter table collection auto_increment = 1;
-    delete from user_role;
     delete from `user`;
     alter table `user` auto_increment = 1;
     
@@ -115,7 +114,6 @@ begin
     (3, 6, 3, 'Hour of Reckoning', '7', 'w', 'Tarkir: Dragonstorm Commander', 'test uri'),
     (4, 2, 4, 'The Ur-Dragon', '9', 'wubrg', 'Commander Masters', 'test uri'),
     (5, 1, 3, 'Black Lotus', '0', 'c', 'Limited Edition Alpha', 'test uri'); -- For testing with adding to collected_card
-
 
     insert into `user` (`user_id`,`username`,`email`,`password_hash_char`,`restricted`,`role`) values
     (1,'george','george@mail.com','$2a$10$jyIwwSytGOU43X7PPe8BOevjtbOT3V2naTPUbiKsD0kK6Z2x74l/e',0,'USER'),
