@@ -63,6 +63,15 @@ public class CardJdbcTemplateRepository implements CardRepository{
         return jdbcTemplate.query(sql, new CardMapper());
     }
 
+    public Card findById(String cardId) {
+        final String sql = "SELECT * FROM card WHERE card_id = ?;";
+
+        return jdbcTemplate.query(sql, new CardMapper(), cardId)
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
+
     @Override
     public boolean insert(Card card) {
         final String sql = "INSERT INTO card (card_id, card_type_id, rarity_id, card_name, mana_cost, color_identity, `set`, image_uri) " +
