@@ -103,9 +103,44 @@ public class CardJdbcTemplateRepository implements CardRepository{
     }
 
     @Transactional
+    @Override
     public boolean runScryfallUpdate() throws Exception {
         boolean actionCompleted = false;
 
+        // Get Scryfall's bulk data download links
+        ScryfallBulkResponse scryfallBulkResponse = getDownloadLinks();
+
+        // Get the Default as it supports multiple sets but maintains a smaller smile size through only having EN cards
+        Optional<ScryfallBulkData> defaultCards = scryfallBulkResponse.getData().stream().filter(data ->
+                data.getType().equals("default_cards")).findFirst();
+
+        if (defaultCards.isPresent()) {
+            String cardDataUrl = defaultCards.get().getDownload_uri();
+
+            Path outputPath = Paths.get(directory + "/" + filename);
+
+            // Attempt to download the bulk json file then populate local database
+            downloadFile(cardDataUrl, outputPath);
+
+            if(populateLocalDatabase()) {
+                System.out.println("Database updated, please double check in MySQL Workbench");
+                actionCompleted = true;
+            } else {
+                System.out.println("Something went wrong");
+            }
+        }
+
+        // Delete the bulk download file once we're done with it
+        for (File file : Objects.requireNonNull(directory.listFiles())) {
+            if (!file.isDirectory()) {
+                file.delete();
+            }
+        }
+
+        return actionCompleted;
+    }
+
+    private static ScryfallBulkResponse getDownloadLinks() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.scryfall.com/bulk-data"))
@@ -114,35 +149,10 @@ public class CardJdbcTemplateRepository implements CardRepository{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         ObjectMapper mapper = new ObjectMapper();
-        ScryfallBulkResponse scryfallBulkResponse = mapper.readValue(response.body(), ScryfallBulkResponse.class);
-
-        Optional<ScryfallBulkData> defaultCards = scryfallBulkResponse.getData().stream().filter(data -> data.getType().equals("default_cards")).findFirst();
-
-        if (defaultCards.isPresent()) {
-            String cardDataUrl = defaultCards.get().getDownload_uri();
-            // System.out.println(cardDataUri);
-
-            Path outputPath = Paths.get(directory + "/" + filename);
-
-            downloadFile(cardDataUrl, outputPath);
-
-            if(populateLocalDatabase()) {
-                System.out.println("Database updated, please double check in SqlWorkbench");
-                for (File file : Objects.requireNonNull(directory.listFiles())) {
-                    if (!file.isDirectory()) {
-                        file.delete();
-                    }
-                }
-                actionCompleted = true;
-            } else {
-                System.out.println("Something went wrong");
-            }
-        }
-
-        return actionCompleted;
+        return mapper.readValue(response.body(), ScryfallBulkResponse.class);
     }
 
-    public static void downloadFile(String fileUrl, Path outputPath) throws IOException, InterruptedException {
+    private static void downloadFile(String fileUrl, Path outputPath) throws IOException, InterruptedException {
         Files.createDirectories(outputPath.getParent());
 
         HttpClient client = HttpClient.newHttpClient();
@@ -157,11 +167,6 @@ public class CardJdbcTemplateRepository implements CardRepository{
         } else {
             throw new IOException("Download failed with status: " + response.statusCode());
         }
-    }
-
-    private String getJsonFromFile() throws IOException {
-        Path path = Paths.get(directory.toString(), filename);
-        return Files.readString(path, StandardCharsets.UTF_8);
     }
 
     private boolean populateLocalDatabase() throws IOException {
@@ -209,6 +214,11 @@ public class CardJdbcTemplateRepository implements CardRepository{
         }
     }
 
+    private String getJsonFromFile() throws IOException {
+        Path path = Paths.get(directory.toString(), filename);
+        return Files.readString(path, StandardCharsets.UTF_8);
+    }
+
     private String parseText(JsonNode node, String key) {
         return node.hasNonNull(key) ? node.get(key).asText() : "";
     }
@@ -219,7 +229,8 @@ public class CardJdbcTemplateRepository implements CardRepository{
         String setName = parseText(node, "set_name");
         CardRarity rarity = CardRarity.findByName(parseText(node, "rarity"));
 
-        // remaining variables might be nested inside card_faces so double check if blank. Only worry about the front face
+        // Remaining variables might be nested inside card_faces so double check if the initial is blank
+        // Only worry about the front face, back faces will not be supported in our webapp
         String typeLine = parseText(node, "type_line");
         if (typeLine.isBlank() && node.has("card_faces")) {
             typeLine = parseText(node.get("card_faces").get(0), "type_line");
@@ -249,12 +260,13 @@ public class CardJdbcTemplateRepository implements CardRepository{
         }
 
         // A card might not have an image
+        // TODO: Prepopulate with a placeholder image
         String imageUrl = "";
         if (node.has("image_uris") && node.get("image_uris").has("normal")) {
             imageUrl = node.get("image_uris").get("normal").asText();
         }
 
-        // Fail if required fields are missing
+        // Fail in a controlled manner if a required String is blank
         if (cardId.isBlank() || cardName.isBlank() || typeLine.isBlank() || setName.isBlank()) {
             throw new SQLException("Missing required fields for card at index " + index);
         }

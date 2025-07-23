@@ -3,16 +3,19 @@ package wotc.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import wotc.data.CardJdbcTemplateRepository;
 import wotc.data.CardRepository;
+import wotc.data.UserRepository;
 import wotc.models.*;
 
 import java.io.IOException;
@@ -41,10 +44,24 @@ public class CardControllerTest {
     @MockitoBean
     CardRepository repository;
 
+    @MockitoBean
+    UserRepository userRepository;
+
     @Autowired
     MockMvc mvc;
 
+    @BeforeEach
+    void setup() {
+        User user = new User(1, "Test", "Test@mail.com", "Pass1234", false, Role.ADMIN);
+
+        when(userRepository.findByUsername("Test")).thenReturn(user);
+
+        // TODO: Mock a login?
+        // token = service.authenticate(user);
+    }
+
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void addShouldReturn400WhenEmpty() throws Exception {
 //
 //        var request = post("/api/card")
