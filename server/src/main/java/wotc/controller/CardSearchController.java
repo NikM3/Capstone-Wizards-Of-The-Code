@@ -11,7 +11,6 @@ import wotc.models.PagedResult;
 import java.util.List;
 
 @RestController
-
 @RequestMapping("/search")
 public class CardSearchController {
 

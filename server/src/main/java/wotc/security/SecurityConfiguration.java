@@ -40,7 +40,8 @@ public class SecurityConfiguration {
                                 "/register",
                                 "/refresh",
                                 "/validateToken",
-                                "/api/card")
+                                "/api/card",
+                                "/search/**")
 
                         .permitAll()
                         .requestMatchers("/admin/**", "/api/admin/**").hasAuthority(Role.ADMIN.name())
