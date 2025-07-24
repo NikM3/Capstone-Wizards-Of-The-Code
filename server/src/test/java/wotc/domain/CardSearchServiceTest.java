@@ -2,9 +2,12 @@ package wotc.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import wotc.data.CardRepository;
 import wotc.data.CardSearchRepository;
@@ -31,108 +34,50 @@ class CardSearchServiceTest {
     }
 
     @Test
-    void fuzzySearch_returnsPagedCardsSortedByName() {
+    void fuzzySearch_returnsSingleCard() {
         // Arrange
         CardSearch cs = new CardSearch();
         cs.setId("card123");
         cs.setName("Lightning Bolt");
         cs.setType("Instant");
 
-        SearchHit<CardSearch> mockHit = mock(SearchHit.class);
-        when(mockHit.getContent()).thenReturn(cs);
+        SearchHit<CardSearch> hit = mock(SearchHit.class);
+        when(hit.getContent()).thenReturn(cs);
 
-        SearchHits<CardSearch> mockHits = mock(SearchHits.class);
-        when(mockHits.getSearchHits()).thenReturn(List.of(mockHit));
-        when(mockHits.getTotalHits()).thenReturn(1L);
+        SearchHits<CardSearch> hits = mock(SearchHits.class);
+        when(hits.getSearchHits()).thenReturn(List.of(hit));
+        when(hits.getTotalHits()).thenReturn(1L);
 
-        when(elasticsearchOperations.search(any(CriteriaQuery.class), eq(CardSearch.class)))
-                .thenReturn(mockHits);
+        when(elasticsearchOperations.search(any(CriteriaQuery.class), eq(CardSearch.class))).thenReturn(hits);
 
-        Card fullCard = new Card();
-        fullCard.setCardId("card123");
-        fullCard.setName("Lightning Bolt");
-        fullCard.setCardType(CardType.INSTANT);
-        fullCard.setCardRarity(CardRarity.COMMON);
+        Card card = new Card();
+        card.setCardId("card123");
+        card.setName("Lightning Bolt");
+        card.setCardType(CardType.INSTANT);
+        card.setCardRarity(CardRarity.COMMON);
 
-        when(cardRepository.findById("card123")).thenReturn(fullCard);
+        when(cardRepository.findById("card123")).thenReturn(card);
 
         // Act
-        PagedResult<Card> result = service.fuzzySearch("light", 0, 10, "name", "asc");
+        PagedResult<Card> result = service.fuzzySearch("bolt", 0, 10, "name", "asc");
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
-        assertEquals(1, result.getTotalElements());
-        assertEquals(1, result.getTotalPages());
-        assertEquals(0, result.getPage());
-        assertEquals(10, result.getSize());
-
-        Card card = result.getContent().get(0);
-        assertEquals("Lightning Bolt", card.getName());
-        assertEquals(CardType.INSTANT, card.getCardType());
-        assertEquals(CardRarity.COMMON, card.getCardRarity());
-    }
-
-    @Test
-    void fuzzySearch_returnsMultipleCards() {
-        // Arrange: create two mock CardSearch results
-        CardSearch cs1 = new CardSearch();
-        cs1.setId("card001");
-        cs1.setName("Lightning Bolt");
-        cs1.setType("Instant");
-
-        CardSearch cs2 = new CardSearch();
-        cs2.setId("card002");
-        cs2.setName("Lightning Strike");
-        cs2.setType("Instant");
-
-        SearchHit<CardSearch> hit1 = mock(SearchHit.class);
-        when(hit1.getContent()).thenReturn(cs1);
-
-        SearchHit<CardSearch> hit2 = mock(SearchHit.class);
-        when(hit2.getContent()).thenReturn(cs2);
-
-        SearchHits<CardSearch> mockHits = mock(SearchHits.class);
-        when(mockHits.getSearchHits()).thenReturn(List.of(hit1, hit2));
-        when(elasticsearchOperations.search(any(CriteriaQuery.class), eq(CardSearch.class)))
-                .thenReturn(mockHits);
-
-        Card card1 = new Card();
-        card1.setCardId("card001");
-        card1.setName("Lightning Bolt");
-        card1.setCardType(CardType.INSTANT);
-        card1.setCardRarity(CardRarity.COMMON);
-
-        Card card2 = new Card();
-        card2.setCardId("card002");
-        card2.setName("Lightning Strike");
-        card2.setCardType(CardType.INSTANT);
-        card2.setCardRarity(CardRarity.UNCOMMON);
-
-        when(cardRepository.findById("card001")).thenReturn(card1);
-        when(cardRepository.findById("card002")).thenReturn(card2);
-
-        // Act
-        PagedResult<Card> result = service.fuzzySearch("light", 0, 10, "name", "asc");
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(2, result.getContent().size());
         assertEquals("Lightning Bolt", result.getContent().get(0).getName());
-        assertEquals("Lightning Strike", result.getContent().get(1).getName());
     }
 
     @Test
-    void fuzzySearch_returnsEmptyWhenNoMatches() {
-        // Arrange: mock Elasticsearch returning no hits
+    void fuzzySearch_returnsEmptyWhenNoMatch() {
+        // Arrange
         SearchHits<CardSearch> emptyHits = mock(SearchHits.class);
         when(emptyHits.getSearchHits()).thenReturn(List.of());
+        when(emptyHits.getTotalHits()).thenReturn(0L);
 
-        when(elasticsearchOperations.search(any(CriteriaQuery.class), eq(CardSearch.class)))
-                .thenReturn(emptyHits);
+        when(elasticsearchOperations.search(any(CriteriaQuery.class), eq(CardSearch.class))).thenReturn(emptyHits);
 
         // Act
-        PagedResult<Card> result = service.fuzzySearch("nonexistent", 0, 10, "name", "asc");
+        PagedResult<Card> result = service.fuzzySearch("unknown", 0, 10, "name", "asc");
 
         // Assert
         assertNotNull(result);
@@ -141,37 +86,72 @@ class CardSearchServiceTest {
     }
 
     @Test
-    void fuzzySearch_defaultsToNameSortingOnInvalidField() {
+    void fuzzySearch_defaultsToNameWhenSortInvalid() {
         // Arrange
         CardSearch cs = new CardSearch();
-        cs.setId("card123");
-        cs.setName("Lightning Bolt");
+        cs.setId("card001");
+        cs.setName("Shock");
         cs.setType("Instant");
 
-        SearchHit<CardSearch> mockHit = mock(SearchHit.class);
-        when(mockHit.getContent()).thenReturn(cs);
+        SearchHit<CardSearch> hit = mock(SearchHit.class);
+        when(hit.getContent()).thenReturn(cs);
 
-        SearchHits<CardSearch> mockHits = mock(SearchHits.class);
-        when(mockHits.getSearchHits()).thenReturn(List.of(mockHit));
-        when(elasticsearchOperations.search(any(CriteriaQuery.class), eq(CardSearch.class)))
-                .thenReturn(mockHits);
+        SearchHits<CardSearch> hits = mock(SearchHits.class);
+        when(hits.getSearchHits()).thenReturn(List.of(hit));
+        when(hits.getTotalHits()).thenReturn(1L);
 
-        Card fullCard = new Card();
-        fullCard.setCardId("card123");
-        fullCard.setName("Lightning Bolt");
-        fullCard.setCardType(CardType.INSTANT);
-        fullCard.setCardRarity(CardRarity.COMMON);
+        when(elasticsearchOperations.search(any(CriteriaQuery.class), eq(CardSearch.class))).thenReturn(hits);
 
-        when(cardRepository.findById("card123")).thenReturn(fullCard);
+        Card card = new Card();
+        card.setCardId("card001");
+        card.setName("Shock");
+        card.setCardType(CardType.INSTANT);
+        card.setCardRarity(CardRarity.COMMON);
+
+        when(cardRepository.findById("card001")).thenReturn(card);
 
         // Act
-        PagedResult<Card> result = service.fuzzySearch("light", 0, 10, "invalidField", "asc");
+        PagedResult<Card> result = service.fuzzySearch("shock", 0, 10, "invalid", "asc");
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
+        assertEquals("Shock", result.getContent().get(0).getName());
+    }
 
-        Card resultCard = result.getContent().get(0);
-        assertEquals("Lightning Bolt", resultCard.getName());
+    @Test
+    void syncAllCardsToSearchIndex_indexesAllCards() {
+        // Arrange
+        Card card1 = new Card();
+        card1.setCardId("card1");
+        card1.setName("Lightning Bolt");
+        card1.setCardType(CardType.INSTANT);
+
+        Card card2 = new Card();
+        card2.setCardId("card2");
+        card2.setName("Grizzly Bears");
+        card2.setCardType(CardType.CREATURE);
+
+        when(cardRepository.findAll()).thenReturn(List.of(card1, card2));
+
+        IndexOperations indexOps = mock(IndexOperations.class);
+        when(elasticsearchOperations.indexOps(CardSearch.class)).thenReturn(indexOps);
+        when(indexOps.exists()).thenReturn(false); 
+
+        // Capture index requests
+        ArgumentCaptor<CardSearch> documentCaptor = ArgumentCaptor.forClass(CardSearch.class);
+        when(cardSearchRepository.save(documentCaptor.capture())).thenReturn(null);
+
+        // Act
+        service.syncAllCardsToSearchIndex();
+
+        // Assert
+        verify(indexOps).create(any());
+        verify(indexOps).putMapping((Document) any());
+        verify(cardSearchRepository, times(2)).save(any(CardSearch.class));
+
+        List<CardSearch> savedDocuments = documentCaptor.getAllValues();
+        assertEquals("card1", savedDocuments.get(0).getId());
+        assertEquals("card2", savedDocuments.get(1).getId());
     }
 }

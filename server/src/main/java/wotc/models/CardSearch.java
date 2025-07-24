@@ -3,6 +3,7 @@ package wotc.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+@Document(indexName = "cardsearch")
 public class CardSearch {
 
     @Id
@@ -13,10 +14,12 @@ public class CardSearch {
     public CardSearch() {}
 
     public CardSearch(Card card) {
+
         this.id = card.getCardId();
         this.name = card.getName();
         this.type = card.getCardType().name();
     }
+
 
     public String getId() {
         return id;
