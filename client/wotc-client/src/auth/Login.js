@@ -13,8 +13,9 @@ function Login() {
     const [loginForm, setLoginForm] = useState(LOGIN_FORM);
     const [message, setMessage] = useState('');
     const [errors, setErrors] = useState([]);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { login } = useAuth(); 
+    const { login } = useAuth();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -22,7 +23,7 @@ function Login() {
             navigate('/home');
         }
     }, []);
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -32,18 +33,22 @@ function Login() {
             setMessage('Please enter your password');
         } else {
             try {
+                setLoading(true)
                 const resp = await AuthService.login(loginForm);
                 if (resp.ok) {
                     const data = await resp.json();
                     await login(data.authenticationToken)
+                    setLoading(false)
                     navigate('/home');
                 } else {
+                    setLoading(false)
                     setMessage('Login failed. Please check your credentials.');
                 }
-            } catch(error) {
+            } catch (error) {
+                setLoading(false)
                 setErrors(error);
                 setMessage('')
-            } 
+            }
         }
     }
 
@@ -64,16 +69,28 @@ function Login() {
                                 <div className="mb-3">
                                     <label htmlFor="email" className="form-label ">Email address</label>
                                     <input type="email" className="form-control form-control-lg" id="email" name="email"
-                                    value={loginForm.email} onChange={handleChange} placeholder="name@example.com" />
+                                        value={loginForm.email} onChange={handleChange} placeholder="name@example.com" />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="password" className="form-label">Password</label>
                                     <input type="password" className="form-control form-control-lg" id="password" name="password"
-                                    value={loginForm.password} onChange={handleChange} placeholder="***********" />
+                                        value={loginForm.password} onChange={handleChange} placeholder="***********" />
                                 </div>
 
                                 <div className="col-10 col-md-8 mx-auto alignt-items-center text-center">
-                                    <button type="submit" className="btn btn-lg bg-blue text-white px-5 ">Login</button>
+                                    <button type="submit" className="btn btn-lg bg-blue text-white px-5 ">
+                                        {loading === true && (
+                                            <>
+                                                <span class="spinner-border text-white spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Loading...</span>
+                                            </>
+                                        )}
+                                        { loading === false && (
+                                            <>
+                                                Login
+                                            </>
+                                        )}
+                                    </button>
                                 </div>
 
                             </form>
@@ -86,18 +103,18 @@ function Login() {
                         {message.length > 0 && (
                             <div className="alert alert-danger">
                                 <ul>
-                                {message}
+                                    {message}
                                 </ul>
                             </div>
-                            )}
+                        )}
                         {errors.length > 0 && (
                             <div className="alert alert-danger">
                                 <p>The following errors where found:</p>
                                 <ul>
-                                {errors}
+                                    {errors}
                                 </ul>
                             </div>
-                            )}
+                        )}
                     </div>
                 </div>
             </div>
