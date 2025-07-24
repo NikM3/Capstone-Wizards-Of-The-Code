@@ -133,6 +133,7 @@ function ViewCard() {
 
     return (
         <>
+            {/* Add loading for card and collectedCard */}
             <Navbar />
             <div className="container ">
                 <div className="row mb-2 ">
