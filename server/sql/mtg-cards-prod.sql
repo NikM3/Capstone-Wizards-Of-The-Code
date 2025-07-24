@@ -43,6 +43,7 @@ create table card (
     card_name varchar(200) not null,
     mana_cost varchar(100) not null,
     color_identity varchar(100) not null,
+    card_text text,
     `set` varchar(100) not null,
     image_uri varchar(200) not null,
 
