@@ -99,18 +99,20 @@ public class CardSearchService {
                 .or(new Criteria("type").contains(query));
 
         CriteriaQuery searchQuery = new CriteriaQuery(criteria, pageable);
-        SearchHits<CardSearch> hits = elasticsearchOperations.search(searchQuery, CardSearch.class);
 
-        // Try fuzzy match if nothing was found in hits
-        if (hits.isEmpty()) {
-            criteria = new Criteria("name").fuzzy(query)
-                    .or(new Criteria("type").fuzzy(query));
-            searchQuery = new CriteriaQuery(criteria, pageable);
+        SearchHits<CardSearch> hits;
+        try {
             hits = elasticsearchOperations.search(searchQuery, CardSearch.class);
+        }  catch (Exception ex) {
+            throw new RuntimeException("Search failed: " + ex.getMessage(), ex);
         }
 
-        List<Card> cards = hits.getSearchHits().stream()
-                .map(hit -> cardRepository.findById(hit.getContent().getId()))
+        List<String> ids = hits.getSearchHits().stream()
+                .map(hit -> hit.getContent().getId())
+                .toList();
+
+        List<Card> cards = ids.stream()
+                .map(cardRepository::findById)
                 .filter(Objects::nonNull)
                 .toList();
 
