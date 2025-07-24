@@ -73,10 +73,31 @@ public class CardSearchService {
                         "name", Map.of(
                                 "type", "text",
                                 "analyzer", "autocomplete",
-                                "search_analyzer", "standard"
+                                "search_analyzer", "standard",
+                                "fields", Map.of(
+                                        "keyword", Map.of(
+                                                "type", "keyword",
+                                                "ignore_above", 256
+                                        )
+                                )
                         ),
                         "type", Map.of(
-                                "type", "text"
+                                "type", "text",
+                                "fields", Map.of(
+                                        "keyword", Map.of(
+                                                "type", "keyword",
+                                                "ignore_above", 256
+                                        )
+                                )
+                        ),
+                        "id", Map.of(
+                                "type", "text",
+                                "fields", Map.of(
+                                        "keyword", Map.of(
+                                                "type", "keyword",
+                                                "ignore_above", 256
+                                        )
+                                )
                         )
                 )
         );
@@ -86,14 +107,16 @@ public class CardSearchService {
     }
 
     public PagedResult<Card> fuzzySearch(String query, int page, int size, String sort, String direction) {
-        Set<String> SORTABLE_FIELDS = Set.of("name", "type", "id");
+        Set<String> SORTABLE_FIELDS = Set.of("name", "type");
         String sortField = SORTABLE_FIELDS.contains(sort) ? sort : "name";
+
+        String sortFieldForES = sortField + ".keyword";
 
         Sort.Direction sortDirection = direction.equalsIgnoreCase("desc")
                 ? Sort.Direction.DESC
                 : Sort.Direction.ASC;
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortFieldForES));
 
         Criteria criteria = new Criteria("name").contains(query)
                 .or(new Criteria("type").contains(query));
