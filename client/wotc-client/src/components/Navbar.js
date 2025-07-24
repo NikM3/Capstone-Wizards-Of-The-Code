@@ -17,7 +17,7 @@ function Navbar() {
             <nav className="navbar navbar-light bg-purple text-white justify-content-between">
                 <div className="d-flex px-5 my-1 align-items-center">
                     <Link to={'/home'} className="navbar-brand text-white">
-                        <h2 className=" mb-0 mr-4 ">Magic</h2>
+                        <h2 className=" mb-0 mr-4 ">Arcane Archive</h2>
                     </Link>
                     <ul className="nav">
                         <li className="nav-item ">

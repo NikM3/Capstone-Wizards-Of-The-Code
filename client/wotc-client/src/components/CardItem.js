@@ -1,6 +1,6 @@
 function CardItem({ card, onClick }) {
     return (
-        <div className="card-item bg-dark col-2 col-md-6 col-lg-2 mb-2 mx-auto shadow-sm m-2 p-2 rounded-2"
+        <div className="card-item bg-dark-light col-2 col-md-6 col-lg-2 mb-2 mx-auto shadow-sm m-2 p-2 rounded-2"
             onClick={onClick} style={{ cursor: 'pointer' }}
         >
             <img src={card.imageUri} alt={card.name}  />

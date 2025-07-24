@@ -5,6 +5,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import wotc.data.mappers.UserMapper;
+import wotc.models.Collection;
 import wotc.models.User;
 
 import java.sql.PreparedStatement;
@@ -14,9 +15,11 @@ import java.util.List;
 @Repository
 public class UserJdbcTemplateRepository implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final CollectionJdbcTemplateRepository collectionJdbcTemplateRepository;
 
-    public UserJdbcTemplateRepository(JdbcTemplate jdbcTemplate) {
+    public UserJdbcTemplateRepository(JdbcTemplate jdbcTemplate, CollectionJdbcTemplateRepository collectionJdbcTemplateRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.collectionJdbcTemplateRepository = collectionJdbcTemplateRepository;
     }
 
 
@@ -70,6 +73,9 @@ public class UserJdbcTemplateRepository implements UserRepository {
             return null;
         }
         user.setUserId(keyHolder.getKey().intValue());
+        // Insert a default collectionId
+        collectionJdbcTemplateRepository.add(new Collection(user.getUserId(), "default collection"));
+
         return user;
     }
 
