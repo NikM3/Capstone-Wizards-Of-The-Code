@@ -43,7 +43,7 @@ class CollectedCardJdbcTemplateRepositoryTest {
         CollectedCard collectedCard = repository.findByCardId(4);
 
         assertEquals(4, collectedCard.getCollectedCardId());
-        assertEquals(4, collectedCard.getCardId());
+        assertEquals("4", collectedCard.getCardId());
         assertEquals(1, collectedCard.getCollectionId());
         assertEquals(1, collectedCard.getQuantity());
         assertEquals("Near Mint", collectedCard.getCondition());
@@ -90,7 +90,7 @@ class CollectedCardJdbcTemplateRepositoryTest {
 
     private CollectedCard makeCollectedCard() {
         CollectedCard collectedCard = new CollectedCard();
-        collectedCard.setCardId(5);
+        collectedCard.setCardId("5");
         collectedCard.setCollectionId(1);
         collectedCard.setQuantity(1);
         collectedCard.setCondition("Damaged");
