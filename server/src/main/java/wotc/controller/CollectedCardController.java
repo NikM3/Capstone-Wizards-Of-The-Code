@@ -26,6 +26,11 @@ public class CollectedCardController {
         return service.findCollectedCardsByCollection(collectionId);
     }
 
+    @GetMapping("/{collectionId}/{cardId}")
+    public CollectedCard findCollectedCardByCardId(@PathVariable int collectionId, @PathVariable int cardId) {
+        return service.findCollectedCardByCardId(collectionId, cardId);
+    }
+
     @PostMapping
     public ResponseEntity<Object> addCollectedCard(@RequestBody CollectedCard collectedCard) {
         Result<CollectedCard> result = service.addCollectedCard(collectedCard);
@@ -48,7 +53,7 @@ public class CollectedCardController {
         return ErrorResponse.build(result);
     }
 
-    @DeleteMapping("{collectedCardId}")
+    @DeleteMapping("/{collectedCardId}")
     public ResponseEntity<Void> deleteCollectedCard(@PathVariable int collectedCardId) {
         Result<CollectedCard> result = service.deleteCollectedCard(collectedCardId);
 

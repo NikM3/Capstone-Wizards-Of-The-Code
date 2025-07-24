@@ -35,6 +35,14 @@ public class CollectedCardJdbcTemplateRepository implements CollectedCardReposit
     }
 
     @Override
+    public CollectedCard findCollectedCardByCardId(int collectionId, int cardId) {
+        final String sql = "select collected_card_id, card_id, collection_id, quantity, `condition`, in_use "
+                +"from collected_card where collection_id = ? and card_id = ?;";
+        return jdbcTemplate.query(sql, new CollectedCardMapper(), collectionId, cardId).stream().findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public CollectedCard findByCardId(int collectedCardId) {
         final String sql = "select collected_card_id, card_id, collection_id, quantity, `condition`, in_use "
                 + "from collected_card "
@@ -53,7 +61,7 @@ public class CollectedCardJdbcTemplateRepository implements CollectedCardReposit
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int rowsAffected = jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, collectedCard.getCardId());
+            ps.setString(1, collectedCard.getCardId());
             ps.setInt(2, collectedCard.getCollectionId());
             ps.setInt(3, collectedCard.getQuantity());
             ps.setString(4, collectedCard.getCondition());
