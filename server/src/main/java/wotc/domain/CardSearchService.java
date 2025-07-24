@@ -38,6 +38,7 @@ public class CardSearchService {
 
     @PostConstruct
     public void init() {
+        createIndexIfNotExists();
         syncAllCardsToSearchIndex();
     }
 
@@ -132,5 +133,17 @@ public class CardSearchService {
             ex.printStackTrace();
         }
 
+    }
+
+    private void createIndexIfNotExists() {
+        IndexOperations indexOps = elasticsearchOperations.indexOps(CardSearch.class);
+
+        if (!indexOps.exists()){
+            indexOps.create();
+            indexOps.putMapping(indexOps.createMapping());
+            System.out.println("Created cardsearch index and mapping");
+        } else {
+            System.out.println("Index cardsearch already exists");
+        }
     }
 }
