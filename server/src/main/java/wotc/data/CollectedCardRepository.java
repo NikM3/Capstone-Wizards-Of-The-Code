@@ -15,5 +15,5 @@ public interface CollectedCardRepository {
 
     boolean deleteCollectedCard(int collectedCardId);
 
-    CollectedCard findCollectedCardByCardId(int collectionId, int cardId);
+    CollectedCard findCollectedCardByCardId(int collectionId, String cardId);
 }

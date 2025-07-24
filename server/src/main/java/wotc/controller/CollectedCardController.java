@@ -27,7 +27,7 @@ public class CollectedCardController {
     }
 
     @GetMapping("/{collectionId}/{cardId}")
-    public CollectedCard findCollectedCardByCardId(@PathVariable int collectionId, @PathVariable int cardId) {
+    public CollectedCard findCollectedCardByCardId(@PathVariable int collectionId, @PathVariable String cardId) {
         return service.findCollectedCardByCardId(collectionId, cardId);
     }
 

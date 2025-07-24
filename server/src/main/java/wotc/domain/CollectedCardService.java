@@ -18,7 +18,7 @@ public class CollectedCardService {
     public List<CollectedCard> findCollectedCardsByCollection(int collectionId) {
         return repository.findCollectedCardsByCollection(collectionId);
     }
-    public CollectedCard findCollectedCardByCardId(int collectionId, int cardId) {
+    public CollectedCard findCollectedCardByCardId(int collectionId, String cardId) {
         return repository.findCollectedCardByCardId(collectionId, cardId);
     }
 

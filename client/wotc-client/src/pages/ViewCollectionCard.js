@@ -283,7 +283,7 @@ function ViewCollectionCard() {
 
                     </div>
                     <div className="col-4 mt-5 align-items-center d-flex justify-content-center">
-                        <img src="https://cards.scryfall.io/large/front/d/f/dfd977dc-a7c3-4d0a-aca7-b25bd154e963.jpg?1721426785" alt="magic the gathering card" className="img-fluid card-image" />
+                        <img src={card.imageUri} alt="magic the gathering card" className="img-fluid card-image" />
                     </div>
                 </div>
             </div>

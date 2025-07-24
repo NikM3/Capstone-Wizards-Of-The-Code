@@ -35,7 +35,7 @@ public class CollectedCardJdbcTemplateRepository implements CollectedCardReposit
     }
 
     @Override
-    public CollectedCard findCollectedCardByCardId(int collectionId, int cardId) {
+    public CollectedCard findCollectedCardByCardId(int collectionId, String cardId) {
         final String sql = "select collected_card_id, card_id, collection_id, quantity, `condition`, in_use "
                 +"from collected_card where collection_id = ? and card_id = ?;";
         return jdbcTemplate.query(sql, new CollectedCardMapper(), collectionId, cardId).stream().findFirst()
