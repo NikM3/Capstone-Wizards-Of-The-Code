@@ -96,6 +96,7 @@ public class CollectedCardJdbcTemplateRepository implements CollectedCardReposit
                 "c.card_name, " +
                 "c.mana_cost, " +
                 "c.color_identity, " +
+                "c.card_text, " +
                 "c.set, " +
                 "c.image_uri, " +
                 "ct.card_type AS card_type, " +
@@ -103,7 +104,7 @@ public class CollectedCardJdbcTemplateRepository implements CollectedCardReposit
                 "FROM card c " +
                 "JOIN card_type ct ON c.card_type_id = ct.card_type_id " +
                 "JOIN rarity r ON c.rarity_id = r.rarity_id " +
-                "where card_id = ?;";
+                "WHERE card_id = ?;";
 
         for (int i = 0; i < collectedCards.size(); i++) {
             var card = jdbcTemplate.query(sql, new CardMapper(), collectedCards.get(i).getCardId());
