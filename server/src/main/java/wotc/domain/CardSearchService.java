@@ -1,6 +1,7 @@
 package wotc.domain;
 
 
+import org.elasticsearch.common.recycler.Recycler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -59,7 +60,7 @@ public class CardSearchService {
     // Perform a fuzzy search by card name or type and return full Card objects
     public PagedResult<Card> fuzzySearch(String query, int page, int size, String sort, String direction) {
         // Allowed sort fields
-        Set<String> SORTABLE_FIELDS = Set.of("name", "cardType", "cardRarity", "cardId");
+        Set<String> SORTABLE_FIELDS = Set.of("name");
 
         // Default to name if field is invalid
         if (!SORTABLE_FIELDS.contains(sort)) {
@@ -72,8 +73,7 @@ public class CardSearchService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
 
-        Criteria criteria = new Criteria("name").fuzzy(query)
-                .or(new Criteria("type").fuzzy(query));
+        Criteria criteria = new Criteria("name").fuzzy(query);
 
         CriteriaQuery searchQuery = new CriteriaQuery(criteria, pageable);
 
