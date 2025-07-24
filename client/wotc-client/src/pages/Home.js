@@ -28,18 +28,18 @@ function Home() {
                     'Content-Type': 'application/json',
                 },
             })
-            .then(resp => {
-                if (resp.status === 200) {
-                    return resp.json()
-                } else {
-                    return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
-                }
-            })
-            .then(data => {
-                console.log("Cards fetched:", data);
-                setCards(data);
-            })
-            .catch(console.log)
+                .then(resp => {
+                    if (resp.status === 200) {
+                        return resp.json()
+                    } else {
+                        return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
+                    }
+                })
+                .then(data => {
+                    console.log("Cards fetched:", data);
+                    setCards(data);
+                })
+                .catch(console.log)
         }
         fetchCards();
     }, []);
@@ -51,33 +51,37 @@ function Home() {
 
         const fuzzySearchName = async () => {
             const query = event.target.elements.searchBar.value;
-            const page = 0;
-            const size = 10;
-            const sort = "name"
-            const direction = "asc"
+            if (query.trim() === "") {
+                window.location.reload()
+            } else {
+                const page = 0;
+                const size = 10;
+                const sort = "name"
+                const direction = "asc"
 
-            const definedSearchUrl = `${searchUrl}?query=${encodeURIComponent(query)}&page=${page}&size=${size}&sort=${sort}&direction=${direction}`;
-
-            await fetch(definedSearchUrl, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(resp => {
-                if (resp.status === 200) {
-                    return resp.json()
-                } else {
-                    return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
-                }
-            })
-            .then(data => {
-                console.log("Cards fetched:", data);
-                setCards(data);
-            })
-            .catch((err) => {
-                console.error("Fetch failed:", err);
-            })
+                const definedSearchUrl = `${searchUrl}?query=${encodeURIComponent(query)}&page=${page}&size=${size}&sort=${sort}&direction=${direction}`;
+                console.log(definedSearchUrl)
+                await fetch(definedSearchUrl, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(resp => {
+                        if (resp.status === 200) {
+                            return resp.json()
+                        } else {
+                            return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
+                        }
+                    })
+                    .then(data => {
+                        console.log("Cards fetched:", data);
+                        setCards(data.content);
+                    })
+                    .catch((err) => {
+                        console.error("Fetch failed:", err);
+                    })
+            }
         }
         fuzzySearchName();
 
@@ -100,60 +104,20 @@ function Home() {
                                 <button className="btn btn-lg bg-blue text-white my-2 my-sm-0" type="submit">Search</button>
                             </div>
 
-                            <div className="form-group d-flex align-items-center flex-wrap mt-2">
-                                <p className="mb-0 me-4">Color: </p>
-
-                                <div className="form-check form-check-inline ">
-                                    <input className="form-check-input" type="checkbox" id="red" />
-                                    <label className="form-check-label" htmlFor="red">Red</label>
-                                </div>
-
-                                <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="checkbox" id="blue" />
-                                    <label className="form-check-label" htmlFor="blue">Blue</label>
-                                </div>
-
-                                <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="checkbox" id="white" />
-                                    <label className="form-check-label" htmlFor="white">White</label>
-                                </div>
-
-                                <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="checkbox" id="green" />
-                                    <label className="form-check-label" htmlFor="green">Green</label>
-                                </div>
-
-                                <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="checkbox" id="black" />
-                                    <label className="form-check-label" htmlFor="black">Black</label>
-                                </div>
-                            </div>
-                            <div className="form-group d-flex align-items-center flex-wrap mt-2">
-                                <p className="mb-0 me-4">Rarity: </p>
-
-                                <div className="form-check form-check-inline ">
-                                    <input className="form-check-input" type="checkbox" id="common" />
-                                    <label className="form-check-label" htmlFor="common">Common</label>
-                                </div>
-
-                                <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="checkbox" id="uncommon" />
-                                    <label className="form-check-label" htmlFor="uncommon">Uncommon</label>
-                                </div>
-
-                                <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="checkbox" id="rare" />
-                                    <label className="form-check-label" htmlFor="rare">Rare</label>
-                                </div>
-
-                                <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="checkbox" id="mythic" />
-                                    <label className="form-check-label" htmlFor="mythic">Mythic</label>
-                                </div>
-                            </div>
                         </form>
 
                         <div className="row mt-4 ">
+                            {/* Add loading for Cards */}
+
+                            {cards === undefined || cards.length === 0 && (
+                                <>
+                                    <div className="d-flex mt-5 justify-content-center">
+                                        <div className="spinner-border text-purple" role="status" style={{ width: '4rem', height: '4rem' }}>
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                             {cards.map(card => (
                                 <CardItem key={card.cardId} card={card} onClick={() => handleCardView(card.cardId)} />
                             ))}

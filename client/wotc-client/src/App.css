@@ -120,3 +120,10 @@ footer {
 .bg-red:hover{
     background-color: #f6633a;
 }
+
+.bg-dark-light {
+    background-color: #353535;
+}
+.bg-dark-light:hover {
+    background-color: #1d1c1c;
+}

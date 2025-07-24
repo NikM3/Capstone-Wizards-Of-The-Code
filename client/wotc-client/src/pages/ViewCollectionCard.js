@@ -123,11 +123,11 @@ function ViewCollectionCard() {
         .catch(console.log)
     }
 
-    const handleDelete = (e) => {
+    const handleDelete = async (e) => {
         e.preventDefault()
         const token = localStorage.getItem('token');
 
-        fetch(`${urlCollectedCard}/${collectedCard.collectedCardId}`, {
+        await fetch(`${urlCollectedCard}/${collectedCard.collectedCardId}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -143,6 +143,15 @@ function ViewCollectionCard() {
             }
         })
         .then( () => {
+            const modal = document.querySelector('.modal.show'); 
+            if (modal) {
+                const backdrop = document.querySelector('.modal-backdrop');
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+                if (backdrop) backdrop.remove();
+                document.body.classList.remove('modal-open');
+                document.body.style = '';
+            }
             navigate('/collection');
         })
         .catch(console.log)
@@ -160,6 +169,7 @@ function ViewCollectionCard() {
 
     return (
         <>
+            {/* Add loading for card and collectedCard */}
             <Navbar />
             <div className="container ">
                 <div className="row ">
