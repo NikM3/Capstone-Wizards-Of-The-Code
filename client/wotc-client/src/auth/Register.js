@@ -13,6 +13,7 @@ const REGISTER_FORM = {
 function Register() {
     const [registerForm, setRegisterForm] = useState(REGISTER_FORM);
     const [message, setMessage] = useState('');
+    const [errors, setErrors] = useState([]);
     const navigate = useNavigate();
     const { login } = useAuth();
 
@@ -25,24 +26,36 @@ function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (registerForm.password !== registerForm.confirmPassword) {
-            setMessage('Passwords do not match.');
-            console.log("Passwords do not match.");
-        }
-        try {
-            const resp = await AuthService.register(registerForm);
         
-            if (resp.ok) {
-                const data = await resp.json();
-                await login(data.authenticationToken)
-                navigate('/home');
+        if (registerForm.email === "") {
+            setMessage('Please enter your email address');
+        } else if (registerForm.username === "") {
+            setMessage('Please enter your username');
+        } else if (registerForm.password === "" || registerForm.confirmPassword === "") {
+            setMessage('Please enter your password');
+        } else {
+            if (registerForm.password !== registerForm.confirmPassword) {
+                setMessage('Passwords do not match.');
+                console.log("Passwords do not match.");
             } else {
-                setMessage('Register failed. Please check your credentials.');
+                try {
+                    const resp = await AuthService.register(registerForm);
+                
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        await login(data.authenticationToken)
+                        navigate('/home');
+                    } else {
+                        console.log('Register failed. Please check your credentials.')
+                        setMessage('Register failed. Please check your credentials.');
+                    }
+                } catch(error) {
+                    console.log(error)
+                    setErrors(error)
+                    setMessage('')
+                } 
             }
-        } catch(error) {
-            console.log(error)
-            setMessage('')
-        } 
+        }
     }
 
     const handleChange = (event) => {
@@ -88,6 +101,23 @@ function Register() {
                         </div>
                     </div>
                     <p className="my-1 h4">Already have an account? <Link to={'/'} >Click here to Login</Link></p>
+                    <div className="container">
+                        {message.length > 0 && (
+                            <div className="alert alert-danger">
+                                <ul>
+                                {message}
+                                </ul>
+                            </div>
+                            )}
+                        {errors.length > 0 && (
+                            <div className="alert alert-danger">
+                                <p>The following errors where found:</p>
+                                <ul>
+                                {errors}
+                                </ul>
+                            </div>
+                            )}
+                    </div>
                 </div>
             </div>
         </>
