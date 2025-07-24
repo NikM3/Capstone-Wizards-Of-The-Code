@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import wotc.data.mappers.CardMapper;
 import wotc.data.mappers.CollectedCardMapper;
 import wotc.models.CollectedCard;
 
@@ -25,7 +26,12 @@ public class CollectedCardJdbcTemplateRepository implements CollectedCardReposit
         final String sql = "select collected_card_id, card_id, collection_id, quantity, `condition`, in_use "
                 + "from collected_card "
                 + "where collection_id = ?;";
-        return jdbcTemplate.query(sql, new CollectedCardMapper(), collectionId);
+        List<CollectedCard> collectedCards = jdbcTemplate.query(sql, new CollectedCardMapper(), collectionId);
+
+        if (!collectedCards.isEmpty()) {
+            addCards(collectedCards);
+        }
+        return collectedCards;
     }
 
     @Override
@@ -82,5 +88,27 @@ public class CollectedCardJdbcTemplateRepository implements CollectedCardReposit
     public boolean deleteCollectedCard(int collectedCardId) {
 
         return jdbcTemplate.update("delete from collected_card where collected_card_id = ?;", collectedCardId) > 0;
+    }
+
+    private void addCards(List<CollectedCard> collectedCards) {
+        final  String sql = "select " +
+                "c.card_id, " +
+                "c.card_name, " +
+                "c.mana_cost, " +
+                "c.color_identity, " +
+                "c.card_text, " +
+                "c.set, " +
+                "c.image_uri, " +
+                "ct.card_type AS card_type, " +
+                "r.rarity AS card_rarity " +
+                "FROM card c " +
+                "JOIN card_type ct ON c.card_type_id = ct.card_type_id " +
+                "JOIN rarity r ON c.rarity_id = r.rarity_id " +
+                "WHERE card_id = ?;";
+
+        for (int i = 0; i < collectedCards.size(); i++) {
+            var card = jdbcTemplate.query(sql, new CardMapper(), collectedCards.get(i).getCardId());
+            collectedCards.get(i).setCards(card);
+        }
     }
 }

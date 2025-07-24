@@ -139,6 +139,25 @@ class CollectedCardServiceTest {
     }
 
     @Test
+    void shouldNotAddDuplicateCard() {
+        CollectedCard cardIn = new CollectedCard();
+        cardIn.setCardId(1);
+        cardIn.setCollectionId(1);
+        cardIn.setQuantity(5);
+        cardIn.setCondition("Lightly Played");
+        cardIn.setInUse(false);
+        CollectedCard cardOut = makeCollectedCards().get(0);
+        List<CollectedCard> expected = new ArrayList<>();
+        expected.add(cardOut);
+        when(service.findCollectedCardsByCollection(1)).thenReturn(expected);
+
+        Result<CollectedCard> result = service.addCollectedCard(cardIn);
+        assertEquals(ResultType.INVALID, result.getType());
+        assertTrue(result.getMessages().get(0).contains("A card with card_id"));
+        assertNull(result.getPayload());
+    }
+
+    @Test
     void shouldUpdate() {
         CollectedCard cardIn = makeCollectedCards().get(0);
         when(repository.editCollectedCard(cardIn)).thenReturn(true);
@@ -212,6 +231,25 @@ class CollectedCardServiceTest {
 
         Result<CollectedCard> result = service.editCollectedCard(collectedCardIn);
         assertTrue(result.getMessages().get(0).contains(", not found"));
+    }
+
+    @Test
+    void shouldNotUpdateDuplicateCard() {
+        CollectedCard cardIn = new CollectedCard();
+        cardIn.setCardId(1);
+        cardIn.setCollectionId(1);
+        cardIn.setQuantity(5);
+        cardIn.setCondition("Lightly Played");
+        cardIn.setInUse(false);
+        CollectedCard cardOut = makeCollectedCards().get(0);
+        List<CollectedCard> expected = new ArrayList<>();
+        expected.add(cardOut);
+        when(service.findCollectedCardsByCollection(1)).thenReturn(expected);
+
+        Result<CollectedCard> result = service.editCollectedCard(cardIn);
+        assertEquals(ResultType.INVALID, result.getType());
+        assertTrue(result.getMessages().get(0).contains("A card with card_id"));
+        assertNull(result.getPayload());
     }
 
     @Test

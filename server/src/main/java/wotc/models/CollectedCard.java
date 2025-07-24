@@ -1,5 +1,8 @@
 package wotc.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CollectedCard {
     private int collectedCardId;
     private int cardId;
@@ -7,6 +10,7 @@ public class CollectedCard {
     private int quantity;
     private String condition;
     private boolean inUse;
+    List<Card> cards = new ArrayList<>();
 
     // Default constructor
     public CollectedCard() {
@@ -69,5 +73,9 @@ public class CollectedCard {
 
     public void setInUse(boolean inUse) {
         this.inUse = inUse;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
     }
 }
