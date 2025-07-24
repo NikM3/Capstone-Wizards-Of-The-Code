@@ -94,3 +94,7 @@ values
 (4, 'Mythic'),
 (5, 'Special'),
 (6, 'Bonus');
+
+set sql_safe_updates = 0;
+update `user` set role = 'ADMIN' where username = 'admin';
+set sql_safe_updates = 1;

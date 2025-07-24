@@ -7,6 +7,8 @@ import ViewCard from './pages/ViewCard';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminHome from './pages/admin/AdminHome';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminDatabase from "./pages/admin/AdminDatabase";
 import Collection from './pages/Collection';
 import ViewCollectionCard from './pages/ViewCollectionCard';
 
@@ -24,6 +26,8 @@ function App() {
         <Route path="/collection/card/:cardId" element={<ProtectedRoute><ViewCollectionCard /></ProtectedRoute>} />
         {/* Admin Views */}
         <Route path="/admin" element={<ProtectedRoute requiredRole="ADMIN"><AdminHome /></ProtectedRoute>} />
+        <Route path="/admin/users" element={<ProtectedRoute requiredRole="ADMIN"><AdminUsers /></ProtectedRoute>} />
+        <Route path="/admin/database" element={<ProtectedRoute requiredRole="ADMIN"><AdminDatabase /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

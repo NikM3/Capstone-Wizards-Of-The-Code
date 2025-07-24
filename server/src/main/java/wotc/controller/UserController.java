@@ -8,6 +8,8 @@ import wotc.domain.ResultType;
 import wotc.domain.UserService;
 import wotc.models.User;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -16,6 +18,11 @@ public class UserController {
 
     public UserController(UserService service) {
         this.service = service;
+    }
+
+    @GetMapping
+    public List<User> findAllUsers() {
+        return service.findAll();
     }
 
     @PostMapping
