@@ -154,6 +154,17 @@ function Home() {
                         </form>
 
                         <div className="row mt-4 ">
+                            {/* Add loading for Cards */}
+
+                            { cards === undefined || cards.length === 0 && (
+                                <>
+                                <div className="d-flex mt-5 justify-content-center">
+                                    <div className="spinner-border text-purple" role="status"  style={{ width: '4rem', height: '4rem' }}>
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                                </>
+                            )}
                             {cards.map(card => (
                                 <CardItem key={card.cardId} card={card} onClick={() => handleCardView(card.cardId)} />
                             ))}

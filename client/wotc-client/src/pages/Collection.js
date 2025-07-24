@@ -104,58 +104,16 @@ function Collection() {
                                         <button className="btn btn-lg bg-blue text-white my-2 my-sm-0" type="submit">Search</button>
                                     </div>
 
-                                    <div className="form-group d-flex align-items-center flex-wrap mt-2">
-                                        <p className="mb-0 mr-4">Color: </p>
-
-                                        <div className="form-check form-check-inline ">
-                                            <input className="form-check-input" type="checkbox" id="red" />
-                                            <label className="form-check-label" htmlFor="red">Red</label>
-                                        </div>
-
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="blue" />
-                                            <label className="form-check-label" htmlFor="blue">Blue</label>
-                                        </div>
-
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="white" />
-                                            <label className="form-check-label" htmlFor="white">White</label>
-                                        </div>
-
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="green" />
-                                            <label className="form-check-label" htmlFor="green">Green</label>
-                                        </div>
-                                    </div>
-                                    <div className="form-group d-flex align-items-center flex-wrap mt-2">
-                                        <p className="mb-0 mr-4">Rarity: </p>
-
-                                        <div className="form-check form-check-inline ">
-                                            <input className="form-check-input" type="checkbox" id="red" />
-                                            <label className="form-check-label" htmlFor="red">Red</label>
-                                        </div>
-
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="blue" />
-                                            <label className="form-check-label" htmlFor="blue">Blue</label>
-                                        </div>
-
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="white" />
-                                            <label className="form-check-label" htmlFor="white">White</label>
-                                        </div>
-
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="checkbox" id="green" />
-                                            <label className="form-check-label" htmlFor="green">Green</label>
-                                        </div>
-                                    </div>
                                 </form>
                             </>
                         )}
                         {collectionCards === undefined && (
                             <>
-                                <p>Loading</p>
+                                <div className="d-flex mt-5 justify-content-center">
+                                    <div className="spinner-border text-purple" role="status"  style={{ width: '4rem', height: '4rem' }}>
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
                             </>
                         )}
 
@@ -165,6 +123,15 @@ function Collection() {
                                     {cards.map(card => (
                                         <CardItem key={card.cardId} card={card} onClick={() => handleCardView(card.cardId)} />
                                     ))}
+                                </div>
+                            </>
+                        )}
+                        {cards === undefined && (
+                            <>
+                                <div className="d-flex mt-5 justify-content-center">
+                                    <div className="spinner-border text-purple" role="status"  style={{ width: '4rem', height: '4rem' }}>
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
                                 </div>
                             </>
                         )}
