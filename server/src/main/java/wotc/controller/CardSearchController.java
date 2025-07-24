@@ -38,7 +38,7 @@ public class CardSearchController {
             @RequestParam(defaultValue = "asc") String direction
     ) {
         if (query == null || query.isBlank()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(new PagedResult<>(List.of(), page, size, 0));
         }
         System.out.println("Starting search for: " + query);
         PagedResult<Card> result = cardSearchService.fuzzySearch(query, page, size, sort, direction);
