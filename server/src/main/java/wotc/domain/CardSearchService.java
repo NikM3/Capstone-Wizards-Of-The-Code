@@ -37,6 +37,10 @@ public class CardSearchService {
     }
 
     @PostConstruct
+    public void init() {
+        syncAllCardsToSearchIndex();
+    }
+
     public void createIndexWithCustomAnalyzer() {
         IndexOperations indexOps = elasticsearchOperations.indexOps(CardSearch.class);
 
@@ -90,12 +94,19 @@ public class CardSearchService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField));
 
-        Criteria criteria = new Criteria("name").fuzzy(query)
-                .or(new Criteria("type").fuzzy(query));
+        Criteria criteria = new Criteria("name").contains(query)
+                .or(new Criteria("type").contains(query));
 
         CriteriaQuery searchQuery = new CriteriaQuery(criteria, pageable);
-
         SearchHits<CardSearch> hits = elasticsearchOperations.search(searchQuery, CardSearch.class);
+
+        // Try fuzzy match if nothing was found in hits
+        if (hits.isEmpty()) {
+            criteria = new Criteria("name").fuzzy(query)
+                    .or(new Criteria("type").fuzzy(query));
+            searchQuery = new CriteriaQuery(criteria, pageable);
+            hits = elasticsearchOperations.search(searchQuery, CardSearch.class);
+        }
 
         List<Card> cards = hits.getSearchHits().stream()
                 .map(hit -> cardRepository.findById(hit.getContent().getId()))
@@ -108,12 +119,18 @@ public class CardSearchService {
     }
 
     public void syncAllCardsToSearchIndex() {
-        createIndexWithCustomAnalyzer();
-        List<Card> cards = cardRepository.findAll();
+        try {
+            createIndexWithCustomAnalyzer();
+            List<Card> cards = cardRepository.findAll();
 
-        for (Card card : cards) {
-            CardSearch document = new CardSearch(card);
-            cardSearchRepository.save(document);
+            for (Card card : cards) {
+                cardSearchRepository.save(new CardSearch(card));
+            }
+            System.out.println("Successfully indexed " + cards.size() + " cards.");
+        } catch (Exception ex) {
+            System.err.println("Error during indexing: " + ex.getMessage());
+            ex.printStackTrace();
         }
+
     }
 }

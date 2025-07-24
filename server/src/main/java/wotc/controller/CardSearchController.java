@@ -23,7 +23,7 @@ public class CardSearchController {
     }
 
 
-    @PostMapping("/sync")
+    @PostMapping("/reindex")
     public ResponseEntity<String> syncCards() {
         cardSearchService.syncAllCardsToSearchIndex();
         return ResponseEntity.ok("Cards indexed to Elasticsearch.");
