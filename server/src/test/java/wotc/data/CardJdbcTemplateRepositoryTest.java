@@ -37,6 +37,15 @@ class CardJdbcTemplateRepositoryTest {
     }
 
     @Test
+    void shouldFindByChandrasOutrage() {
+        Card card = repository.findById("1");
+        assertNotNull(card);
+        assertEquals("1", card.getCardId());
+        assertEquals("Chandra's Outrage", card.getName());
+        assertEquals("4", card.getManaCost());
+    }
+
+    @Test
     void shouldUpdateDatabaseWithNewCard() {
         Card card = new Card();
         card.setCardId("999");
@@ -45,6 +54,7 @@ class CardJdbcTemplateRepositoryTest {
         card.setCardType(CardType.INSTANT);
         card.setCardRarity(CardRarity.RARE);
         card.setCardColors(Arrays.asList(CardColor.RED, CardColor.BLUE));
+        card.setCardText("Test text");
         card.setCardSet("Test Set");
         card.setImageUri("test-uri");
 
@@ -78,6 +88,7 @@ class CardJdbcTemplateRepositoryTest {
         goodCard.setCardType(CardType.CREATURE);
         goodCard.setCardRarity(CardRarity.COMMON);
         goodCard.setCardColors(List.of(CardColor.GREEN));
+        goodCard.setCardText("Good Card");
         goodCard.setCardSet("Good Set");
         goodCard.setImageUri("good-uri");
 
@@ -88,6 +99,7 @@ class CardJdbcTemplateRepositoryTest {
         badCard.setCardType(null); // Invalid: will cause exception
         badCard.setCardRarity(CardRarity.UNCOMMON);
         badCard.setCardColors(List.of(CardColor.BLACK));
+        goodCard.setCardText("Bad Card");
         badCard.setCardSet("Bad Set");
         badCard.setImageUri("bad-uri");
 

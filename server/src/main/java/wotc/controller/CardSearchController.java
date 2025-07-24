@@ -1,5 +1,6 @@
 package wotc.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,17 +11,19 @@ import wotc.models.PagedResult;
 import java.util.List;
 
 @RestController
-@RequestMapping("/search")
+@RequestMapping("/api/search")
 public class CardSearchController {
 
     private final CardSearchService cardSearchService;
+
 
     @Autowired
     public CardSearchController(CardSearchService cardSearchService) {
         this.cardSearchService = cardSearchService;
     }
 
-    @PostMapping("/sync")
+
+    @PostMapping("/reindex")
     public ResponseEntity<String> syncCards() {
         cardSearchService.syncAllCardsToSearchIndex();
         return ResponseEntity.ok("Cards indexed to Elasticsearch.");
@@ -37,7 +40,7 @@ public class CardSearchController {
         if (query == null || query.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
-
+        System.out.println("Starting search for: " + query);
         PagedResult<Card> result = cardSearchService.fuzzySearch(query, page, size, sort, direction);
         return ResponseEntity.ok(result);
     }

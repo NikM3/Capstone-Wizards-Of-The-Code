@@ -5,12 +5,18 @@ import org.springframework.stereotype.Service;
 import wotc.data.UserRepository;
 import wotc.models.User;
 
+import java.util.List;
+
 @Service
 public class UserService {
     private final UserRepository repository;
 
     public UserService(UserRepository repository) {
         this.repository = repository;
+    }
+
+    public List<User> findAll() {
+        return repository.findAll();
     }
 
     public User findByUserName(String username) {

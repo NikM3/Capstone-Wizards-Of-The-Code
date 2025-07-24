@@ -9,12 +9,12 @@
 
 * [X] Setup the project repo (Nikolas)
 * [X] Configure the .gitignore (Nikolas)
-* [ ] Research Scryfall API (Everybody | 2 hours)
+* [X] Research Scryfall API (Everybody | 2 hours)
 * [ ] Research Elastic Search (Everybody | 2 hours)
 
 ### Infrastructure
-* [ ] Create docker container (Nikolas/Taylor | 1 hour)
-    * [ ] Test container startup (Nikolas/Taylor | 0.5 hours)
+* [X] Create docker container (Nikolas/Taylor | 1 hour)
+    * [X] Test container startup (Nikolas/Taylor | 0.5 hours)
 * [x] Build the database
     * [x] Write the DDL (Cesar | 1 hour)
     * [x] Write the DML for testing until API is implemented (Taylor | 1 hour)
@@ -22,38 +22,38 @@
 * [x] Configure environment variables (Roger | 0.5 hour)
 
 ### Server
-* [ ] Add Spring DI and Mocking to the project (Roger | 0.5 hours)
+* [X] Add Spring DI and Mocking to the project (Roger | 0.5 hours)
 * [x] Create models (Taylor | 0.5 hours)
-* [ ] Implement repositories
+* [X] Implement repositories
     * [x] Repository for fetching users (Nikolas | 1 hour)
-    * [ ] Repository for fetching cards (Roger | 1 hour)
+    * [X] Repository for fetching cards (Roger | 1 hour)
     * [x] Repository for fetching collections/collected cards (Taylor | 2 hour)
-    * [ ] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
-* [ ] Implement services
-    * [ ] Service for users (Nikolas | 1 hour)
-    * [ ] Service for cards (Taylor | 1 hour)
-    * [ ] Service for collections (Roger | 2 hours)
-    * [ ] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
-* [ ] Implement controllers
-    * [ ] Controller for users (Nikolas | 1 hour)
-    * [ ] Controller for cards (Taylor | 1 hour)
-    * [ ] Controller for collections (Roger | 1 hour)
-    * [ ] Global Exception Handler (Taylor | 0.5 hour)
-    * [ ] Auth Controller (Cesar/Nikolas | 2 hours)
-    * [ ] Write mappers (Nikolas/Taylor/Roger | 1 hour)
-    * [ ] Unit Tests (Nikolas/Taylor/Roger | 1 hour)
-* [ ] Implement updating the database via Scryfall API
-  * [ ] Access today's bulk download (Taylor/Roger | 3 hours)
-  * [ ] Parse the returned JSON to populate the local database (Taylor/Roger | 4 hours)
+    * [X] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
+* [X] Implement services
+    * [X] Service for users (Nikolas | 1 hour)
+    * [X] Service for cards (Taylor | 1 hour)
+    * [X] Service for collections (Roger | 2 hours)
+    * [X] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
+* [X] Implement controllers
+    * [X] Controller for users (Nikolas | 1 hour)
+    * [X] Controller for cards (Taylor | 1 hour)
+    * [X] Controller for collections (Roger | 1 hour)
+    * [X] Global Exception Handler (Taylor | 0.5 hour)
+    * [X] Auth Controller (Cesar/Nikolas | 2 hours)
+    * [X] Write mappers (Nikolas/Taylor/Roger | 1 hour)
+    * [X] Unit Tests (Nikolas/Taylor/Roger | 1 hour)
+* [X] Implement updating the database via Scryfall API
+  * [X] Access today's bulk download (Taylor/Roger | 3 hours)
+  * [X] Parse the returned JSON to populate the local database (Taylor/Roger | 4 hours)
 * [ ] Implement Elastic Search
 
 ### Client
-* [ ] Create react app and trim cruft (Cesar | 0.5 hours)
-* [ ] Create react components (Navbar/Footer) (Cesar | 0.5 hours)
-* [ ] Set up React routing – (Cesar | 0.5 hours)
-* [ ] Implement user login/registration page (Cesar | 2 hours)
-    * [ ] Implement user authentication (Cesar/Nikolas | 5 hours)
-    * [ ] Run tests (Roger | 0.5 hours)
+* [X] Create react app and trim cruft (Cesar | 0.5 hours)
+* [X] Create react components (Navbar/Footer) (Cesar | 0.5 hours)
+* [X] Set up React routing – (Cesar | 0.5 hours)
+* [X] Implement user login/registration page (Cesar | 2 hours)
+    * [X] Implement user authentication (Cesar/Nikolas | 5 hours)
+    * [X] Run tests (Roger | 0.5 hours)
 * [ ] Implement Home page (Cesar | 1.5 hours)
     * [ ] Run tests (Taylor | 0.5 hour)
 * [ ] Implement My Collection page (Cesar | 1.5 hours)

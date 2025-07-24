@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import wotc.data.CollectionRepository;
 import wotc.models.Collection;
 
@@ -15,14 +16,14 @@ class CollectionServiceTest {
     @Autowired
     CollectionService service;
 
-    @MockBean
+    @MockitoBean
     CollectionRepository repository;
 
     @Test
     void shouldFindCollection() {
         Collection expected = makeCollection();
-        when(repository.findCollectionByUser(1)).thenReturn(expected);
-        Collection actual = service.findCollectionByUser(1);
+        when(repository.findCollectionByUserId(1)).thenReturn(expected);
+        Collection actual = service.findCollectionByUserId(1);
 
         assertEquals(expected, actual);
     }

@@ -5,6 +5,12 @@ import Register from './auth/Register';
 import Home from './pages/Home'
 import ViewCard from './pages/ViewCard';
 import NotFound from './pages/NotFound';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminHome from './pages/admin/AdminHome';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminDatabase from "./pages/admin/AdminDatabase";
+import Collection from './pages/Collection';
+import ViewCollectionCard from './pages/ViewCollectionCard';
 
 function App() {
   return (
@@ -12,9 +18,16 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/view-card" element={<ViewCard />} />
         <Route path="*" element={<NotFound/>} />
+        {/* User Views */}
+        <Route path="/home" element={ <ProtectedRoute><Home /></ProtectedRoute> } />
+        <Route path="/card/:cardId" element={<ProtectedRoute><ViewCard /></ProtectedRoute>} />
+        <Route path="/collection" element={<ProtectedRoute><Collection /></ProtectedRoute>} />
+        <Route path="/collection/card/:cardId" element={<ProtectedRoute><ViewCollectionCard /></ProtectedRoute>} />
+        {/* Admin Views */}
+        <Route path="/admin" element={<ProtectedRoute requiredRole="ADMIN"><AdminHome /></ProtectedRoute>} />
+        <Route path="/admin/users" element={<ProtectedRoute requiredRole="ADMIN"><AdminUsers /></ProtectedRoute>} />
+        <Route path="/admin/database" element={<ProtectedRoute requiredRole="ADMIN"><AdminDatabase /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

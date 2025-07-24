@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/collection")
+@CrossOrigin
 public class CollectionController {
 
     private final CollectionService service;
@@ -21,9 +22,19 @@ public class CollectionController {
         this.service = service;
     }
 
-    @GetMapping("/{userId}")
-    public Collection findCollectionByUser(@PathVariable int userId) {
-        return service.findCollectionByUser(userId);
+    @GetMapping("/{collectionId}")
+    public Collection findCollectionByCollectionId(@PathVariable int collectionId) {
+        return service.findCollectionByCollectionId(collectionId);
+    }
+
+    @GetMapping("/user/{userId}")
+    public Collection findCollectionByUserId(@PathVariable int userId) {
+        return service.findCollectionByUserId(userId);
+    }
+
+    @GetMapping("/email/{userEmail}")
+    public Collection findCollectionByUserEmail(@PathVariable String userEmail) {
+        return service.findCollectionByUserEmail(userEmail);
     }
 
     @PostMapping

@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/collected/card")
+@CrossOrigin
 public class CollectedCardController {
 
     private final CollectedCardService service;
@@ -23,6 +24,11 @@ public class CollectedCardController {
     @GetMapping("/{collectionId}")
     public List<CollectedCard> findCollectedCards(@PathVariable int collectionId) {
         return service.findCollectedCardsByCollection(collectionId);
+    }
+
+    @GetMapping("/{collectionId}/{cardId}")
+    public CollectedCard findCollectedCardByCardId(@PathVariable int collectionId, @PathVariable String cardId) {
+        return service.findCollectedCardByCardId(collectionId, cardId);
     }
 
     @PostMapping
@@ -47,7 +53,7 @@ public class CollectedCardController {
         return ErrorResponse.build(result);
     }
 
-    @DeleteMapping("{collectedCardId}")
+    @DeleteMapping("/{collectedCardId}")
     public ResponseEntity<Void> deleteCollectedCard(@PathVariable int collectedCardId) {
         Result<CollectedCard> result = service.deleteCollectedCard(collectedCardId);
 

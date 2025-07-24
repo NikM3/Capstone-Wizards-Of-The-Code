@@ -43,6 +43,7 @@ create table card (
     card_name varchar(200) not null,
     mana_cost varchar(100) not null,
     color_identity varchar(100) not null,
+    card_text text,
     `set` varchar(100) not null,
     image_uri varchar(200) not null,
 
@@ -72,11 +73,6 @@ create table collected_card (
 
 -- Static insertions that don't need to change between runs
 
-insert into role (role_id, role_name)
-values
-(1, 'Admin'),
-(2, 'Guest');
-
 insert into card_type (card_type_id, card_type)
 values
 (1, 'Artifact'),
@@ -98,3 +94,7 @@ values
 (4, 'Mythic'),
 (5, 'Special'),
 (6, 'Bonus');
+
+set sql_safe_updates = 0;
+update `user` set role = 'ADMIN' where username = 'admin';
+set sql_safe_updates = 1;
