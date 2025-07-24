@@ -89,6 +89,13 @@ public class CollectedCardService {
         if(collectedCard.getQuantity() <= 0) {
             result.addMessage("Quantity cannot be less than or equal to 0", ResultType.INVALID);
         }
+
+        List<CollectedCard> collectedCards = findCollectedCardsByCollection(collectedCard.getCollectionId());
+        for (CollectedCard card : collectedCards) {
+            if (card.getCardId() == collectedCard.getCardId()) {
+                result.addMessage(String.format("A card with card_id %s is already in your collection", collectedCard.getCardId()), ResultType.INVALID);
+            }
+        }
         return result;
 
     }
