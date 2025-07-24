@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import CardItem from "../components/CardItem"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import { useNavigate } from "react-router-dom";
+
 
 const CARD = {
     id: 1,
@@ -10,7 +12,56 @@ const CARD = {
 }
 
 function Collection() {
+    const urlCollection = `http://localhost:8080/api/collection`
+    const urlCollectionCard = `http://localhost:8080/api/collected/card`
     const navigate = useNavigate();
+    const [cards, setCards] = useState()
+    const [collectionId, setCollectionId] = useState(0)
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const email = localStorage.getItem('email')
+
+        const fetchCards = () => {
+            fetch(`${urlCollection}/email/${email}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(resp => {
+                    if (!resp.ok) {
+                        return Promise.reject(`GET error: ${resp.status}`);
+                    }
+                    return resp.json();
+                })
+                .then(data => {
+                    const collectionId = data.collectionId;
+                    setCollectionId(collectionId)
+                    return fetch(`${urlCollectionCard}/${collectionId}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    })
+
+                })
+                .then(resp => {
+                    if (resp.status === 200) {
+                        return resp.json()
+                    } else {
+                        return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
+                    }
+                })
+                .then(data => {
+                    console.log("Cards fetched:", data);
+                    setCards(data);
+                })
+                .catch(console.log)
+        }
+        fetchCards();
+    }, []);
+
     const handleCardView = (cardId) => {
         console.log("Card ID:", cardId);
         navigate(`/collection/card/${cardId}`);
@@ -24,7 +75,7 @@ function Collection() {
                 <div className="row">
                     <div className="col-12 col-md-10 mx-auto mt-2">
                         <h3 className="mt-3 ">My Collection</h3>
-                        <h4 className="my-3">Total Cards: 10</h4>
+                        <h4 className="my-3">Total Cards: {cards.length}</h4>
                         <form className="form-inline ">
                             <div className="form-group mx-2 d-flex">
                                 <input type="text" className="form-control form-control-lg mr-sm-2" placeholder="Search for cards..." />

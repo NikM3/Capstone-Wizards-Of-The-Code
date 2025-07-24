@@ -43,6 +43,7 @@ create table card (
     card_name varchar(200) not null,
     mana_cost varchar(100) not null,
     color_identity varchar(100) not null,
+    card_text text,
     `set` varchar(100) not null,
     image_uri varchar(200) not null,
     
@@ -107,21 +108,19 @@ begin
     delete from `user`;
     alter table `user` auto_increment = 1;
     
-    insert into card(card_id, card_type_id, rarity_id, card_name, mana_cost, color_identity, `set`, image_uri)
+    insert into card(card_id, card_type_id, rarity_id, card_name, mana_cost, color_identity, card_text, `set`, image_uri)
     values
-    (1, 5, 1, 'Chandra''s Outrage', '4', 'r', 'Modern Masters 2017', 'test uri'),
-    (2, 4, 2, 'Dimir Aqueduct', '0', 'ub', 'Zendikar Rising Commander', 'test uri'),
-    (3, 6, 3, 'Hour of Reckoning', '7', 'w', 'Tarkir: Dragonstorm Commander', 'test uri'),
-    (4, 2, 4, 'The Ur-Dragon', '9', 'wubrg', 'Commander Masters', 'test uri'),
-    (5, 1, 3, 'Black Lotus', '0', 'c', 'Limited Edition Alpha', 'test uri'); -- For testing with adding to collected_card
+    (1, 5, 1, 'Chandra''s Outrage', '4', 'r', 'text text', 'Modern Masters 2017', 'test uri'),
+    (2, 4, 2, 'Dimir Aqueduct', '0', 'ub', 'text text', 'Zendikar Rising Commander', 'test uri'),
+    (3, 6, 3, 'Hour of Reckoning', '7', 'w', 'text text', 'Tarkir: Dragonstorm Commander', 'test uri'),
+    (4, 2, 4, 'The Ur-Dragon', '9', 'wubrg', 'text text', 'Commander Masters', 'test uri'),
+    (5, 1, 3, 'Black Lotus', '0', 'c', 'text text', 'Limited Edition Alpha', 'test uri'); -- For testing with adding to collected_card
 
     insert into `user` (`user_id`,`username`,`email`,`password_hash_char`,`restricted`,`role`) values
     (1,'george','george@mail.com','$2a$10$jyIwwSytGOU43X7PPe8BOevjtbOT3V2naTPUbiKsD0kK6Z2x74l/e',0,'USER'),
     (2,'user','user@mail.com','$2a$10$CVNkWJ5z/OBpqQ0NncBIueF7qDKFP3e5E573lEMpIIyO08eaLDz4y',0,'USER'),
     (3,'admin','admin@mail.com','$2a$10$MmuaTPFC39Xmod.Xg2CbfeprpWU6Msd.2sw3IrfCYVqtfc94frioe',0,'ADMIN');
 
-
-    
     insert into collection(collection_id, user_id, collection_name)
     values
     (1, 2, 'test collection');
