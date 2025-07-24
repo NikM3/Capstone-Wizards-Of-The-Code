@@ -11,7 +11,7 @@ import wotc.models.PagedResult;
 import java.util.List;
 
 @RestController
-@RequestMapping("/search")
+@RequestMapping("/api/search")
 public class CardSearchController {
 
     private final CardSearchService cardSearchService;
@@ -40,7 +40,7 @@ public class CardSearchController {
         if (query == null || query.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
-
+        System.out.println("Starting search for: " + query);
         PagedResult<Card> result = cardSearchService.fuzzySearch(query, page, size, sort, direction);
         return ResponseEntity.ok(result);
     }

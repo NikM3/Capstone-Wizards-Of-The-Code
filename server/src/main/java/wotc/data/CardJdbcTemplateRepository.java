@@ -144,6 +144,7 @@ public class CardJdbcTemplateRepository implements CardRepository{
     @Transactional
     @Override
     public boolean runScryfallUpdate() throws Exception {
+        System.out.println("Starting database update process. Please wait.");
         boolean actionCompleted = false;
 
         // Get Scryfall's bulk data download links

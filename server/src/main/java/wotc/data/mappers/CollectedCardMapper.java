@@ -11,7 +11,7 @@ public class CollectedCardMapper implements RowMapper<CollectedCard> {
     public CollectedCard mapRow(ResultSet resultSet, int i) throws SQLException {
         CollectedCard collectedCard = new CollectedCard();
         collectedCard.setCollectedCardId(resultSet.getInt("collected_card_id"));
-        collectedCard.setCardId(resultSet.getInt("card_id"));
+        collectedCard.setCardId(resultSet.getString("card_id"));
         collectedCard.setCollectionId(resultSet.getInt("collection_id"));
         collectedCard.setQuantity(resultSet.getInt("quantity"));
         collectedCard.setCondition(resultSet.getString("condition"));
