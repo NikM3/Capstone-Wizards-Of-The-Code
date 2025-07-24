@@ -9,6 +9,7 @@ import wotc.models.User;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 
 @Repository
 public class UserJdbcTemplateRepository implements UserRepository {
@@ -18,7 +19,16 @@ public class UserJdbcTemplateRepository implements UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    ;
+
+    @Override
+    public List<User> findAll() {
+        final String sql = "select user_id, username, email, password_hash_char, restricted, `role` "
+                + "from `user` "
+                + "order by username;";
+
+        return jdbcTemplate.query(sql, new UserMapper());
+    }
+
     @Override
     public User findByUsername(String username) {
         final String sql = "select user_id, username, email, password_hash_char, restricted, `role` "

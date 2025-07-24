@@ -378,14 +378,14 @@ An enum with four values: Common, Uncommon, Rare, Mythic
     * [x] Repository for fetching collections/collected cards (Taylor | 2 hour)
     * [x] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
 * [ ] Implement services
-    * [ ] Service for users (Nikolas | 1 hour)
+    * [x] Service for users (Nikolas | 1 hour)
     * [ ] Service for cards (Roger | 1 hour)
     * [x] Service for collections (Taylor | 2 hours)
     * [ ] Unit Tests (Nikolas/Taylor/Roger | 2 hours)
 * [ ] Implement controllers
     * [ ] Controller for users (Nikolas | 1 hour)
     * [ ] Controller for cards (Taylor | 1 hour)
-    * [ ] Controller for collections (Roger | 1 hour)
+    * [x] Controller for collections (Roger | 1 hour)
     * [ ] Global Exception Handler (Taylor | 0.5 hour)
     * [ ] Auth Controller (Cesar/Nikolas | 2 hours)
     * [ ] Write mappers (Nikolas/Taylor/Roger | 1 hour)

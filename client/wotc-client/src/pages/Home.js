@@ -4,6 +4,8 @@ import CardItem from '../components/CardItem'
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext';
+import ViewCard from './ViewCard';
+
 
 const CARD = {
     id: 1,
@@ -32,7 +34,10 @@ function Home() {
                     return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
                 }
             })
-            .then(data => setCards(data))
+            .then(data => {
+                console.log("Cards fetched:", data);
+                setCards(data);
+            })
             .catch(console.log)
         }
         fetchCards();
@@ -104,11 +109,10 @@ function Home() {
                         </form>
 
                         <div className="row mt-4 ">
-                            <CardItem card={CARD} onClick={() => handleCardView(CARD.id)} />
-                            <CardItem card={CARD} onClick={() => handleCardView(CARD.id)} />
-                            <CardItem card={CARD} />
-                            <CardItem card={CARD} />
-                            <CardItem card={CARD} />
+                            {cards.map(card => (
+                                <CardItem key={card.cardId} card={card} onClick={() => handleCardView(card.cardId)} />
+                            ))}
+                            {/* <CardItem card={CARD} onClick={() => handleCardView(CARD.id)} /> */}
                         </div>
 
 

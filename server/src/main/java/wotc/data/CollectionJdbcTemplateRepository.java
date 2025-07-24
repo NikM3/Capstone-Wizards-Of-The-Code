@@ -41,8 +41,8 @@ public class CollectionJdbcTemplateRepository implements CollectionRepository {
     @Override
     public Collection findCollectionByUserEmail(String userEmail) {
         final String sql = "select c.collection_id, c.user_id, c.collection_name "
-                + "from collection c"
-                + "inner join user u on c.user_id = u.user_id"
+                + "from collection c "
+                + "inner join user u on c.user_id = u.user_id "
                 + "where u.email = ?;";
         return jdbcTemplate.query(sql, new CollectionMapper(), userEmail).stream()
                 .findFirst().orElse(null);

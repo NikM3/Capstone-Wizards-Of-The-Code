@@ -43,6 +43,7 @@ public class CardMapper implements RowMapper<Card> {
             card.setCardColors(colors);
         }
 
+        card.setCardText(rs.getString("card_text"));
         card.setCardSet(rs.getString("set"));
         card.setImageUri(rs.getString("image_uri"));
 

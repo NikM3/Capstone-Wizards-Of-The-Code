@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/collected/card")
+@CrossOrigin
 public class CollectedCardController {
 
     private final CollectedCardService service;

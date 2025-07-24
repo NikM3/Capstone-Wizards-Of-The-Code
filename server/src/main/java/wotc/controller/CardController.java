@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/card")
+@CrossOrigin
 public class CardController {
 
     private final CardService service;

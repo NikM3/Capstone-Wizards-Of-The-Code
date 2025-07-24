@@ -10,6 +10,9 @@ import wotc.models.Collection;
 import wotc.models.Role;
 import wotc.models.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -23,6 +26,15 @@ class UserServiceTest {
 
     @MockitoBean
     UserRepository repository;
+
+    @Test
+    void shouldFindAll() {
+        User user = makeUser();
+        List<User> expected = new ArrayList<>(List.of(user));
+        when(repository.findAll()).thenReturn(expected);
+        List<User> actual = service.findAll();
+        assertEquals(expected.get(0), actual.get(0));
+    }
 
     @Test
     void shouldFindUserByUserName() {
