@@ -12,6 +12,7 @@ const LOGIN_FORM = {
 function Login() {
     const [loginForm, setLoginForm] = useState(LOGIN_FORM);
     const [message, setMessage] = useState('');
+    const [errors, setErrors] = useState([]);
     const navigate = useNavigate();
     const { login } = useAuth(); 
 
@@ -24,18 +25,26 @@ function Login() {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const resp = await AuthService.login(loginForm);
-            if (resp.ok) {
-                const data = await resp.json();
-                await login(data.authenticationToken)
-                navigate('/home');
-            } else {
-                setMessage('Login failed. Please check your credentials.');
-            }
-        } catch(error) {
-            setMessage('')
-        } 
+
+        if (loginForm.email === "") {
+            setMessage('Please enter your email address');
+        } else if (loginForm.password === "") {
+            setMessage('Please enter your password');
+        } else {
+            try {
+                const resp = await AuthService.login(loginForm);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    await login(data.authenticationToken)
+                    navigate('/home');
+                } else {
+                    setMessage('Login failed. Please check your credentials.');
+                }
+            } catch(error) {
+                setErrors(error);
+                setMessage('')
+            } 
+        }
     }
 
     const handleChange = (event) => {
@@ -73,6 +82,23 @@ function Login() {
                         </div>
                     </div>
                     <p className="my-1 h4">Don't have an account? <Link to={'/register'}>Click here to Register</Link></p>
+                    <div className="container">
+                        {message.length > 0 && (
+                            <div className="alert alert-danger">
+                                <ul>
+                                {message}
+                                </ul>
+                            </div>
+                            )}
+                        {errors.length > 0 && (
+                            <div className="alert alert-danger">
+                                <p>The following errors where found:</p>
+                                <ul>
+                                {errors}
+                                </ul>
+                            </div>
+                            )}
+                    </div>
                 </div>
             </div>
         </>

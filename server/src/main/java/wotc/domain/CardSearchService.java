@@ -1,7 +1,6 @@
 package wotc.domain;
 
-
-import org.elasticsearch.common.recycler.Recycler;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +9,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.document.Document;
-import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.stereotype.Service;
@@ -18,14 +16,9 @@ import wotc.data.CardRepository;
 import wotc.data.CardSearchRepository;
 import wotc.models.Card;
 import wotc.models.CardSearch;
-
-import jakarta.annotation.PostConstruct;
 import wotc.models.PagedResult;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CardSearchService {
@@ -35,7 +28,6 @@ public class CardSearchService {
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
-
     public CardSearchService(CardRepository cardRepository,
                              CardSearchRepository cardSearchRepository,
                              ElasticsearchOperations elasticsearchOperations) {
@@ -44,60 +36,14 @@ public class CardSearchService {
         this.elasticsearchOperations = elasticsearchOperations;
     }
 
-
-    // Index all cards from MySQL into Elasticsearch
-    public void syncAllCardsToSearchIndex() {
-        List<Card> cards = cardRepository.findAll();
-
-        List<CardSearch> searchCards = cards.stream()
-                .map(CardSearch::new)
-                .toList();
-
-        cardSearchRepository.saveAll(searchCards);
-    }
-
-
-    // Perform a fuzzy search by card name or type and return full Card objects
-    public PagedResult<Card> fuzzySearch(String query, int page, int size, String sort, String direction) {
-        // Allowed sort fields
-        Set<String> SORTABLE_FIELDS = Set.of("name");
-
-        // Default to name if field is invalid
-        if (!SORTABLE_FIELDS.contains(sort)) {
-            sort = "name";
-        }
-
-        Sort.Direction sortDirection = direction.equalsIgnoreCase("desc")
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
-
-        Criteria criteria = new Criteria("name").fuzzy(query);
-
-        CriteriaQuery searchQuery = new CriteriaQuery(criteria, pageable);
-
-        SearchHits<CardSearch> hits = elasticsearchOperations.search(searchQuery, CardSearch.class);
-
-        List<Card> cards = hits.getSearchHits().stream()
-                .map(hit -> cardRepository.findById(hit.getContent().getId()))
-                .filter(Objects::nonNull)
-                .toList();
-
-        long totalHits = hits.getTotalHits();
-
-        return new PagedResult<>(cards, page, size, totalHits);
-    }
-
     @PostConstruct
     public void createIndexWithCustomAnalyzer() {
-        IndexOperations indexOps = elasticsearchOperations.indexOps(IndexCoordinates.of("cardsearch"));
+        IndexOperations indexOps = elasticsearchOperations.indexOps(CardSearch.class);
 
         if (indexOps.exists()) {
             indexOps.delete();
         }
 
-        // settings + mapping for autocomplete with edge_ngram
         Map<String, Object> settings = Map.of(
                 "analysis", Map.of(
                         "filter", Map.of(
@@ -132,5 +78,42 @@ public class CardSearchService {
 
         indexOps.create(settings);
         indexOps.putMapping(Document.from(mappings));
+    }
+
+    public PagedResult<Card> fuzzySearch(String query, int page, int size, String sort, String direction) {
+        Set<String> SORTABLE_FIELDS = Set.of("name", "type", "id");
+        String sortField = SORTABLE_FIELDS.contains(sort) ? sort : "name";
+
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField));
+
+        Criteria criteria = new Criteria("name").fuzzy(query)
+                .or(new Criteria("type").fuzzy(query));
+
+        CriteriaQuery searchQuery = new CriteriaQuery(criteria, pageable);
+
+        SearchHits<CardSearch> hits = elasticsearchOperations.search(searchQuery, CardSearch.class);
+
+        List<Card> cards = hits.getSearchHits().stream()
+                .map(hit -> cardRepository.findById(hit.getContent().getId()))
+                .filter(Objects::nonNull)
+                .toList();
+
+        long totalHits = hits.getTotalHits();
+
+        return new PagedResult<>(cards, page, size, totalHits);
+    }
+
+    public void syncAllCardsToSearchIndex() {
+        createIndexWithCustomAnalyzer();
+        List<Card> cards = cardRepository.findAll();
+
+        for (Card card : cards) {
+            CardSearch document = new CardSearch(card);
+            cardSearchRepository.save(document);
+        }
     }
 }

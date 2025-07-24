@@ -110,11 +110,11 @@ begin
     
     insert into card(card_id, card_type_id, rarity_id, card_name, mana_cost, color_identity, card_text, `set`, image_uri)
     values
-    (1, 5, 1, 'Chandra''s Outrage', '4', 'r', 'text text', 'Modern Masters 2017', 'test uri'),
-    (2, 4, 2, 'Dimir Aqueduct', '0', 'ub', 'text text', 'Zendikar Rising Commander', 'test uri'),
-    (3, 6, 3, 'Hour of Reckoning', '7', 'w', 'text text', 'Tarkir: Dragonstorm Commander', 'test uri'),
-    (4, 2, 4, 'The Ur-Dragon', '9', 'wubrg', 'text text', 'Commander Masters', 'test uri'),
-    (5, 1, 3, 'Black Lotus', '0', 'c', 'text text', 'Limited Edition Alpha', 'test uri'); -- For testing with adding to collected_card
+    ('1', 5, 1, 'Chandra''s Outrage', '4', 'r', 'text text', 'Modern Masters 2017', 'test uri'),
+    ('2', 4, 2, 'Dimir Aqueduct', '0', 'ub', 'text text', 'Zendikar Rising Commander', 'test uri'),
+    ('3', 6, 3, 'Hour of Reckoning', '7', 'w', 'text text', 'Tarkir: Dragonstorm Commander', 'test uri'),
+    ('4', 2, 4, 'The Ur-Dragon', '9', 'wubrg', 'text text', 'Commander Masters', 'test uri'),
+    ('5', 1, 3, 'Black Lotus', '0', 'c', 'text text', 'Limited Edition Alpha', 'test uri'); -- For testing with adding to collected_card
 
     insert into `user` (`user_id`,`username`,`email`,`password_hash_char`,`restricted`,`role`) values
     (1,'george','george@mail.com','$2a$10$jyIwwSytGOU43X7PPe8BOevjtbOT3V2naTPUbiKsD0kK6Z2x74l/e',0,'USER'),
@@ -127,10 +127,10 @@ begin
     
     insert into collected_card(collected_card_id, card_id, collection_id, quantity, `condition`, in_use)
     values
-    (1, 1, 1, 5, 'Lightly Played', 0),
-    (2, 2, 1, 10, 'Moderately Played', 1),
-    (3, 3, 1, 2, 'Lightly Played', 0),
-    (4, 4, 1, 1, 'Near Mint', 1);
+    (1, '1', 1, 5, 'Lightly Played', 0),
+    (2, '2', 1, 10, 'Moderately Played', 1),
+    (3, '3', 1, 2, 'Lightly Played', 0),
+    (4, '4', 1, 1, 'Near Mint', 1);
     
 end //
 delimiter ;
