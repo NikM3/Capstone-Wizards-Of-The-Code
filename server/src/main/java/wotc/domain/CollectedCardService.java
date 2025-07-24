@@ -18,6 +18,9 @@ public class CollectedCardService {
     public List<CollectedCard> findCollectedCardsByCollection(int collectionId) {
         return repository.findCollectedCardsByCollection(collectionId);
     }
+    public CollectedCard findCollectedCardByCardId(int collectionId, String cardId) {
+        return repository.findCollectedCardByCardId(collectionId, cardId);
+    }
 
     public CollectedCard findByCardId(int collectedCardId) {
         return repository.findByCardId(collectedCardId);
@@ -78,7 +81,7 @@ public class CollectedCardService {
             return result;
         }
 
-        if (collectedCard.getCardId() <= 0) {
+        if (collectedCard.getCardId().equals("")) {
             result.addMessage("card_id cannot be null", ResultType.INVALID);
         }
 
@@ -92,11 +95,13 @@ public class CollectedCardService {
 
         List<CollectedCard> collectedCards = findCollectedCardsByCollection(collectedCard.getCollectionId());
         for (CollectedCard card : collectedCards) {
-            if (card.getCardId() == collectedCard.getCardId()) {
+            if (card.getCardId() == collectedCard.getCardId() &&
+                    card.getCollectedCardId() != collectedCard.getCollectedCardId()) {
                 result.addMessage(String.format("A card with card_id %s is already in your collection", collectedCard.getCardId()), ResultType.INVALID);
             }
         }
         return result;
 
     }
+
 }

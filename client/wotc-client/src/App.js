@@ -23,7 +23,7 @@ function App() {
         <Route path="/home" element={ <ProtectedRoute><Home /></ProtectedRoute> } />
         <Route path="/card/:cardId" element={<ProtectedRoute><ViewCard /></ProtectedRoute>} />
         <Route path="/collection" element={<ProtectedRoute><Collection /></ProtectedRoute>} />
-        <Route path="/collection/card/:id" element={<ProtectedRoute><ViewCollectionCard /></ProtectedRoute>} />
+        <Route path="/collection/card/:cardId" element={<ProtectedRoute><ViewCollectionCard /></ProtectedRoute>} />
         {/* Admin Views */}
         <Route path="/admin" element={<ProtectedRoute requiredRole="ADMIN"><AdminHome /></ProtectedRoute>} />
         <Route path="/admin/users" element={<ProtectedRoute requiredRole="ADMIN"><AdminUsers /></ProtectedRoute>} />

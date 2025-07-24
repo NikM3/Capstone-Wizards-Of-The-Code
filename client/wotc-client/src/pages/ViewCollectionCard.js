@@ -1,20 +1,161 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+const CARD = {
+    cardId: "",
+    cardRarity: "",
+    cardSet: "",
+    cardType: "",
+    imageUri: "",
+    manaCost: "",
+    name: "",
+    cardText: "",
+}
+const COLLECTED_CARD = {
+    cardId: 0,
+    collectionId: 1,
+    quantity: 1,
+    condition: "Excellent",
+    inUse: false
+}
 function ViewCollectionCard() {
-    const { id } = useParams();
+    const { cardId } = useParams();
     const [editCard, setEditCard] = useState(false);
+    const [card, setCard] = useState(CARD)
+    const [collectedCard, setCollectedCard] = useState(COLLECTED_CARD);
+    const [collectionId, setCollectionId] = useState(0)
+    const navigate = useNavigate();
+    
+    const url = `http://localhost:8080/api/card`;
+    const urlCollection = `http://localhost:8080/api/collection`
+    const urlCollectedCard = `http://localhost:8080/api/collected/card`
+
+
 
     useEffect(() => {
-        console.log("Fetch Card ID:", id);
+        // setCard(CARD)
+        // setCollectedCard(COLLECTED_CARD)
+        const fetchCard = async () => {
+            const email = localStorage.getItem('email')
+            const token = localStorage.getItem('token');
+            await fetch(`${url}/${cardId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(resp => {
+                    if (resp.status === 200) {
+                        return resp.json();
+                    } else {
+                        return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
+                    }
+                })
+                .then(data => {
+                    console.log("Card fetched:", data);
+                    setCard(data);
+                    return fetch(`${urlCollection}/email/${email}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                })
+                .then(resp => {
+                    if (!resp.ok) {
+                        return Promise.reject(`GET error: ${resp.status}`);
+                    }
+                    return resp.json();
+                })
+                .then(data => {
+                    const collectionId = data.collectionId;
+                    console.log(collectionId)
+                    setCollectionId(collectionId)
+                    return fetch(`${urlCollectedCard}/${collectionId}/${cardId}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    })
 
-    }, [id]);
+                })
+                .then(resp => {
+                    if (resp.status === 200) {
+                        return resp.json()
+                    } else {
+                        return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
+                    }
+                })
+                .then(data => {
+                    console.log("CollectedCard fetched:", data);
+                    setCollectedCard(data);
+                })
+                .catch(console.log)
+
+        }
+        fetchCard();
+
+    }, [cardId]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Card Updated to collection");
+        const token = localStorage.getItem('token');
+        fetch(`${urlCollectedCard}/${collectedCard.collectedCardId}`, {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(collectedCard)
+        })
+        .then(resp => {
+            if (resp.status === 204) {
+                console.log("Successfully Updated!")
+            } else {
+                return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
+            }
+        })
+        .then( () => {
+            navigate('/collection');
+        })
+        .catch(console.log)
+    }
+
+    const handleDelete = (e) => {
+        e.preventDefault()
+        const token = localStorage.getItem('token');
+
+        fetch(`${urlCollectedCard}/${collectedCard.collectedCardId}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(resp => {
+            if (resp.status === 204) {
+                console.log("Successfully deleted!")
+                return;
+            } else {
+                return Promise.reject(`Unexpected ERROR Code: ${resp.status}`)
+            }
+        })
+        .then( () => {
+            navigate('/collection');
+        })
+        .catch(console.log)
+    }
+
+    const handleChange = (event) => {
+        const newCollectedCard = { ...collectedCard };
+        if (event.target.type === 'checkbox') {
+            newCollectedCard[event.target.name] = event.target.checked;
+        } else {
+            newCollectedCard[event.target.name] = event.target.value;
+        }
+        setCollectedCard(newCollectedCard);
     }
 
     return (
@@ -23,80 +164,117 @@ function ViewCollectionCard() {
             <div className="container ">
                 <div className="row ">
                     <div className="col-8 mt-5">
-                        <h3 className="mx-4 text-purple">Cache Grab</h3>
-                        <p className="justy-text-left text-black mx-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a tempus dolor. Pellentesque eu ultricies dui. Aliquam lobortis aliquet venenatis. Pellentesque eleifend elit ac neque suscipit malesuada sed nec purus. Maecenas risus ligula, sollicitudin et orci nec, posuere suscipit tortor. In congue ornare eros sed facilisis. Donec faucibus rhoncus leo a rhoncus. Fusce at quam ac diam rutrum porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis vitae magna vitae sem dapibus sagittis. Phasellus vestibulum arcu neque, vel feugiat orci feugiat id. </p>
+                        <h3 className="mx-4 text-purple">{card.name}</h3>
+                        <p className="justy-text-left text-black mx-4">{card.cardText}</p>
 
                         <h5 className="mx-4 mt-5 text-purple">Card Details: </h5>
                         <div className="row mx-2">
                             <div className="form-group col-4 mt-3">
                                 <label for="color" className="form-label">Color: </label>
-                                <input id="color" type="text" className="form-control form-control-lg" value="green" name="color" disabled />
+                                <input id="color" type="text" className="form-control form-control-lg" name="color" value={card.cardColors?.[0]} disabled />
                             </div>
                             <div className="form-group col-4 mt-3">
                                 <label for="manaCost" className="form-label">CMC (Mana Cost): </label>
-                                <input id="manaCost" type="text" className="form-control form-control-lg" value="200" name="manaCost" disabled />
+                                <input id="manaCost" type="text" className="form-control form-control-lg" name="manaCost" value={card.manaCost} disabled />
                             </div>
                             <div className="form-group col-4 mt-3">
                                 <label for="rarity" className="form-label">Rarity: </label>
-                                <input id="rarity" type="text" className="form-control form-control-lg" value="Medium" name="rarity" disabled />
+                                <input id="rarity" type="text" className="form-control form-control-lg" value={card.cardRarity} name="rarity" disabled />
                             </div>
                             <div className="form-group col-4 mt-3">
                                 <label for="cardType" className="form-label">Card Type: </label>
-                                <input id="cardType" type="text" className="form-control form-control-lg" value="Defensive" name="cardType" disabled />
+                                <input id="cardType" type="text" className="form-control form-control-lg" value={card.cardType} name="cardType" disabled />
                             </div>
                             <div className="form-group col-4 mt-3">
                                 <label for="set" className="form-label">Set: </label>
-                                <input id="set" type="text" className="form-control form-control-lg" value="Magic" name="set" disabled />
+                                <input id="set" type="text" className="form-control form-control-lg" value={card.cardSet} name="set" disabled />
                             </div>
-                            <form onSubmit={handleSubmit} className="row">
-                                <div className="form-group col-4 mt-3">
-                                    <label for="quantity" className="form-label">Quantity: </label>
-                                    <input id="quantity" type="number" className="form-control form-control-lg" value="1" min="1" name="quantity" disabled={!editCard} />
-                                </div>
-                                <div className="form-group col-4 mt-3">
-                                    <label htmlFor="condition" className="form-label">Condition: </label>
-                                    <select
-                                        id="condition" name="condition" className="form-control form-control-lg" disabled={!editCard}
-                                    //value={form.condition}
-                                    //onChange={handleChange}
-                                    >
-                                        <option value="Excellent">Excellent</option>
-                                        <option value="Good">Good</option>
-                                        <option value="Fair">Fair</option>
-                                        <option value="Poor">Poor</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-4 mt-3">
-                                    <label htmlFor="inUse" className="form-label">In use?: </label>
-                                    <input type="checkbox" id="inUse" name="inUse" disabled={!editCard} className="mx-3 form-check-input" />
-                                </div>
-                                {editCard && (
-                                    <button type="submit" className="btn btn-lg bg-light-blue text-white mt-3 col-4 mt-2 my-2">Update</button>
-                                )}
-                            </form>
+                            {!editCard && (
+                                <>
+                                    <div className="form-group col-4 mt-3">
+                                        <label htmlFor="quantity" className="form-label">Quantity: </label>
+                                        <input id="quantity" type="number" className="form-control form-control-lg" value={collectedCard.quantity}
+                                            name="quantity" max="1000000" min="1" onChange={handleChange} disabled />
+                                    </div>
+                                    <div className="form-group col-4 mt-3">
+                                        <label htmlFor="condition" className="form-label">Condition: </label>
+                                        <select
+                                            id="condition" name="condition" className="form-control form-control-lg"
+                                            value={collectedCard.condition}
+                                            onChange={handleChange}
+                                            disabled
+                                        >
+                                            <option value="Excellent">Excellent</option>
+                                            <option value="Good">Good</option>
+                                            <option value="Fair">Fair</option>
+                                            <option value="Poor">Poor</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group col-4 mt-3">
+                                        <label htmlFor="inUse" className="form-label">In use?: </label>
+                                        <input type="checkbox" id="inUse" name="inUse" className="mx-3 form-check-input"
+                                            checked={collectedCard.inUse}
+                                            onChange={handleChange}
+                                            disabled
+                                        />
+                                    </div>
+                                </>
+                            )}
+                            {editCard && (
+                                <form onSubmit={handleSubmit} className="row">
+                                    <div className="form-group col-4 mt-3">
+                                        <label htmlFor="quantity" className="form-label">Quantity: </label>
+                                        <input id="quantity" type="number" className="form-control form-control-lg" value={collectedCard.quantity}
+                                            name="quantity" max="1000000" min="1" onChange={handleChange} />
+                                    </div>
+                                    <div className="form-group col-4 mt-3">
+                                        <label htmlFor="condition" className="form-label">Condition: </label>
+                                        <select
+                                            id="condition" name="condition" className="form-control form-control-lg"
+                                            value={collectedCard.condition}
+                                            onChange={handleChange}
+                                        >
+                                            <option value="Excellent">Excellent</option>
+                                            <option value="Good">Good</option>
+                                            <option value="Fair">Fair</option>
+                                            <option value="Poor">Poor</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group col-4 mt-3">
+                                        <label htmlFor="inUse" className="form-label">In use?: </label>
+                                        <input type="checkbox" id="inUse" name="inUse" className="mx-3 form-check-input"
+                                            checked={collectedCard.inUse}
+                                            onChange={handleChange}
+                                        />
+
+                                    </div>
+                                    <button type="submit" className="btn btn-lg bg-light-blue text-white mt-3 col-4 mt-2 my-2">Update Card</button>
+                                </form>
+                            )}
 
                             <br />
                             <button className="btn btn-lg bg-blue col-4 text-white mt-3" onClick={() => setEditCard(prev => !prev)}>{editCard ? 'Cancel' : 'Edit'}</button>
                             {!editCard && (
-                                <button className="btn btn-lg bg-red col-4 text-white mt-3 mx-3" data-toggle="modal" data-target="#deleteModel" onClick={() => console.log("Card removed from collection")}>Delete</button>
+                                <button className="btn btn-lg bg-red col-4 text-white mt-3 mx-3" data-bs-toggle="modal" data-bs-target="#deleteModel"
+                                    onClick={() => console.log("Card removed from collection")}>Delete</button>
                             )}
                         </div>
                         {/* Modal for deleting */}
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="deleteModel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="deleteModel">Modal title</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                        <div className="modal fade" id="deleteModel" tabindex="-1" aria-labelledby="deleteModel" aria-hidden="true">
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title" id="deleteModel">Confirm Delete</h5>
+
                                     </div>
-                                    <div class="modal-body">
-                                        ...
+                                    <div className="modal-body">
+                                        <p>Sure you want to delete card <span>{card.name}</span>?</p>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-lg btn-dark" data-bs-dismiss="modal">Cancel</button>
+                                        <form onSubmit={handleDelete} className="row">
+                                            <button type="submit" className="btn btn-lg bg-red text-white">Yes</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +283,7 @@ function ViewCollectionCard() {
 
                     </div>
                     <div className="col-4 mt-5 align-items-center d-flex justify-content-center">
-                        <img src="https://cards.scryfall.io/large/front/d/f/dfd977dc-a7c3-4d0a-aca7-b25bd154e963.jpg?1721426785" alt="magic the gathering card" className="img-fluid card-image" />
+                        <img src={card.imageUri} alt="magic the gathering card" className="img-fluid card-image" />
                     </div>
                 </div>
             </div>
