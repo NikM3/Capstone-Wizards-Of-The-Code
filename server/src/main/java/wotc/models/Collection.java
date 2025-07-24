@@ -17,6 +17,11 @@ public class Collection {
         this.name = name;
     }
 
+    public Collection(int userId, String name) {
+        this.userId = userId;
+        this.name = name;
+    }
+
     public int getCollectionId() {
         return collectionId;
     }
