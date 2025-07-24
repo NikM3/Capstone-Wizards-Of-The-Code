@@ -48,7 +48,7 @@ class CollectedCardServiceTest {
     @Test
     void shouldAdd() {
         CollectedCard cardIn = new CollectedCard();
-        cardIn.setCardId(1);
+        cardIn.setCardId("1");
         cardIn.setCollectionId(1);
         cardIn.setQuantity(5);
         cardIn.setCondition("Lightly Played");
@@ -66,7 +66,7 @@ class CollectedCardServiceTest {
     @Test
     void shouldAddWithoutCondition() {
         CollectedCard cardIn = new CollectedCard();
-        cardIn.setCardId(1);
+        cardIn.setCardId("1");
         cardIn.setCollectionId(1);
         cardIn.setQuantity(5);
         cardIn.setInUse(false);
@@ -106,7 +106,7 @@ class CollectedCardServiceTest {
     @Test
     void shouldNotAddWithoutCollection() {
         CollectedCard cardIn = new CollectedCard();
-        cardIn.setCardId(1);
+        cardIn.setCardId("1");
         cardIn.setQuantity(5);
         cardIn.setCondition("Lightly Played");
         cardIn.setInUse(false);
@@ -119,7 +119,7 @@ class CollectedCardServiceTest {
     @Test
     void shouldNotAddWithoutQuantity() {
         CollectedCard cardIn = new CollectedCard();
-        cardIn.setCardId(1);
+        cardIn.setCardId("1");
         cardIn.setCollectionId(1);
         cardIn.setCondition("Lightly Played");
         cardIn.setInUse(false);
@@ -141,7 +141,7 @@ class CollectedCardServiceTest {
     @Test
     void shouldNotAddDuplicateCard() {
         CollectedCard cardIn = new CollectedCard();
-        cardIn.setCardId(1);
+        cardIn.setCardId("1");
         cardIn.setCollectionId(1);
         cardIn.setQuantity(5);
         cardIn.setCondition("Lightly Played");
@@ -190,7 +190,7 @@ class CollectedCardServiceTest {
     @Test
     void shouldNotUpdateWithoutCollection() {
         CollectedCard cardIn = new CollectedCard();
-        cardIn.setCardId(1);
+        cardIn.setCardId("1");
         cardIn.setQuantity(5);
         cardIn.setCondition("Lightly Played");
         cardIn.setInUse(false);
@@ -203,7 +203,7 @@ class CollectedCardServiceTest {
     @Test
     void shouldNotUpdateWithoutQuantity() {
         CollectedCard cardIn = new CollectedCard();
-        cardIn.setCardId(1);
+        cardIn.setCardId("1");
         cardIn.setCollectionId(1);
         cardIn.setCondition("Lightly Played");
         cardIn.setInUse(false);
@@ -236,7 +236,7 @@ class CollectedCardServiceTest {
     @Test
     void shouldNotUpdateDuplicateCard() {
         CollectedCard cardIn = new CollectedCard();
-        cardIn.setCardId(1);
+        cardIn.setCardId("1");
         cardIn.setCollectionId(1);
         cardIn.setQuantity(5);
         cardIn.setCondition("Lightly Played");
@@ -271,8 +271,8 @@ class CollectedCardServiceTest {
 
 
     List<CollectedCard> makeCollectedCards() {
-        CollectedCard card1 = new CollectedCard(1, 1, 1, 5, "Lightly Played", false);
-        CollectedCard card2 = new CollectedCard(2, 2, 1, 10, "Moderately Played", true);
+        CollectedCard card1 = new CollectedCard(1, "1", 1, 5, "Lightly Played", false);
+        CollectedCard card2 = new CollectedCard(2, "2", 1, 10, "Moderately Played", true);
 
         List<CollectedCard> myCards = new ArrayList<>();
         myCards.add(card1);

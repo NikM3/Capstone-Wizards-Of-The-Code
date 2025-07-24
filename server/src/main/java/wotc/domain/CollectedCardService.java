@@ -81,7 +81,7 @@ public class CollectedCardService {
             return result;
         }
 
-        if (collectedCard.getCardId().equals("")) {
+        if (Validations.isNullOrBlank(collectedCard.getCardId())) {
             result.addMessage("card_id cannot be null", ResultType.INVALID);
         }
 
@@ -95,7 +95,7 @@ public class CollectedCardService {
 
         List<CollectedCard> collectedCards = findCollectedCardsByCollection(collectedCard.getCollectionId());
         for (CollectedCard card : collectedCards) {
-            if (card.getCardId() == collectedCard.getCardId() &&
+            if (card.getCardId().equals(collectedCard.getCardId()) &&
                     card.getCollectedCardId() != collectedCard.getCollectedCardId()) {
                 result.addMessage(String.format("A card with card_id %s is already in your collection", collectedCard.getCardId()), ResultType.INVALID);
             }
