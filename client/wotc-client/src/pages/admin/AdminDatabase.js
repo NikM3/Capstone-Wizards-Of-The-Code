@@ -28,7 +28,7 @@ function AdminDatabase() {
       <div className="container text-center mt-5">
         <h1 className="display-4">Admin Database</h1>
         <p>Please only update the database once a day!</p>
-        <button className="btn btn-primary" onClick={handleDatabaseUpdate}>
+        <button className="btn btn-lg bg-light-blue text-white" onClick={handleDatabaseUpdate}>
           Update Database
         </button>
       </div>

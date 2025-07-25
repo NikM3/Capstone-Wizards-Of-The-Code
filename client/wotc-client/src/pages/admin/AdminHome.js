@@ -40,7 +40,8 @@ function AdminHome() {
       fetch(`${url}/${user.userId}`, init)
         .then((resp) => {
           if (resp.status === 204) {
-            navigate(`/admin`);
+            //navigate(`/admin`);
+            window.location.reload();
           } else {
             return Promise.reject(`Unexpected ERROR Code: ${resp.status}`);
           }

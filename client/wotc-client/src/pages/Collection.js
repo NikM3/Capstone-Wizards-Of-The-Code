@@ -98,13 +98,13 @@ function Collection() {
                             <>
                                 <h3 className="mt-3 ">My Collection</h3>
                                 <h4 className="my-3">Total Cards: {collectionCards.length}</h4>
-                                <form className="form-inline ">
+                                {/* <form className="form-inline ">
                                     <div className="form-group mx-2 d-flex">
                                         <input type="text" className="form-control form-control-lg mr-sm-2" placeholder="Search for cards..." />
                                         <button className="btn btn-lg bg-blue text-white my-2 my-sm-0" type="submit">Search</button>
                                     </div>
 
-                                </form>
+                                </form> */}
                             </>
                         )}
                         {collectionCards === undefined && (
