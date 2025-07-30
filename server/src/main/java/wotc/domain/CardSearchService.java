@@ -38,6 +38,7 @@ public class CardSearchService {
 
     @PostConstruct
     public void init() {
+        createIndexIfNotExists();
         syncAllCardsToSearchIndex();
     }
 
@@ -72,10 +73,31 @@ public class CardSearchService {
                         "name", Map.of(
                                 "type", "text",
                                 "analyzer", "autocomplete",
-                                "search_analyzer", "standard"
+                                "search_analyzer", "standard",
+                                "fields", Map.of(
+                                        "keyword", Map.of(
+                                                "type", "keyword",
+                                                "ignore_above", 256
+                                        )
+                                )
                         ),
                         "type", Map.of(
-                                "type", "text"
+                                "type", "text",
+                                "fields", Map.of(
+                                        "keyword", Map.of(
+                                                "type", "keyword",
+                                                "ignore_above", 256
+                                        )
+                                )
+                        ),
+                        "id", Map.of(
+                                "type", "text",
+                                "fields", Map.of(
+                                        "keyword", Map.of(
+                                                "type", "keyword",
+                                                "ignore_above", 256
+                                        )
+                                )
                         )
                 )
         );
@@ -85,31 +107,35 @@ public class CardSearchService {
     }
 
     public PagedResult<Card> fuzzySearch(String query, int page, int size, String sort, String direction) {
-        Set<String> SORTABLE_FIELDS = Set.of("name", "type", "id");
+        Set<String> SORTABLE_FIELDS = Set.of("name", "type");
         String sortField = SORTABLE_FIELDS.contains(sort) ? sort : "name";
+
+        String sortFieldForES = sortField + ".keyword";
 
         Sort.Direction sortDirection = direction.equalsIgnoreCase("desc")
                 ? Sort.Direction.DESC
                 : Sort.Direction.ASC;
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortFieldForES));
 
         Criteria criteria = new Criteria("name").contains(query)
                 .or(new Criteria("type").contains(query));
 
         CriteriaQuery searchQuery = new CriteriaQuery(criteria, pageable);
-        SearchHits<CardSearch> hits = elasticsearchOperations.search(searchQuery, CardSearch.class);
 
-        // Try fuzzy match if nothing was found in hits
-        if (hits.isEmpty()) {
-            criteria = new Criteria("name").fuzzy(query)
-                    .or(new Criteria("type").fuzzy(query));
-            searchQuery = new CriteriaQuery(criteria, pageable);
+        SearchHits<CardSearch> hits;
+        try {
             hits = elasticsearchOperations.search(searchQuery, CardSearch.class);
+        }  catch (Exception ex) {
+            throw new RuntimeException("Search failed: " + ex.getMessage(), ex);
         }
 
-        List<Card> cards = hits.getSearchHits().stream()
-                .map(hit -> cardRepository.findById(hit.getContent().getId()))
+        List<String> ids = hits.getSearchHits().stream()
+                .map(hit -> hit.getContent().getId())
+                .toList();
+
+        List<Card> cards = ids.stream()
+                .map(cardRepository::findById)
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -132,5 +158,17 @@ public class CardSearchService {
             ex.printStackTrace();
         }
 
+    }
+
+    private void createIndexIfNotExists() {
+        IndexOperations indexOps = elasticsearchOperations.indexOps(CardSearch.class);
+
+        if (!indexOps.exists()){
+            indexOps.create();
+            indexOps.putMapping(indexOps.createMapping());
+            System.out.println("Created cardsearch index and mapping");
+        } else {
+            System.out.println("Index cardsearch already exists");
+        }
     }
 }
